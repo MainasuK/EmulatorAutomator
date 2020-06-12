@@ -1,0 +1,39 @@
+{
+  "configurations" : [
+    {
+      "id" : "60886C8A-F224-4DE7-8CE1-7A4FDD90315A",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:EmulatorAutomator.xcodeproj",
+        "identifier" : "DB46D545241293E2009628A3",
+        "name" : "EmulatorAutomatorTests"
+      }
+    },
+    {
+      "skippedTests" : [
+        "AdbTests\/testAdb()",
+        "AdbTests\/testAdbDevices()",
+        "AdbTests\/testAdbScreencap()",
+        "AdbTests\/testAdbScreencapStdout()",
+        "AdbTests\/testAdbScreencapUserFileSpace()",
+        "ShellTests\/testShell()"
+      ],
+      "target" : {
+        "containerPath" : "container:..\/AdbAutomator",
+        "identifier" : "AdbAutomatorTests",
+        "name" : "AdbAutomatorTests"
+      }
+    }
+  ],
+  "version" : 1
+}

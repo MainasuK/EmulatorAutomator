@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "idiom" : "mac",
+      "filename" : "DVTViewUtilities_10_10_Normal.png",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "mac",
+      "filename" : "DVTViewUtilities_10_10_Normal@2x.png",
+      "scale" : "2x"
+    }
+  ],
+  "info" : {
+    "version" : 1,
+    "author" : "xcode"
+  },
+  "properties" : {
+    "template-rendering-intent" : "template"
+  }
+}
