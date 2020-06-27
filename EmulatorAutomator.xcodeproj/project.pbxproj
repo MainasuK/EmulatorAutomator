@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		678F934A6949E933470B8A70 /* Pods_EmulatorAutomatorTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F296C46C695586C2E7E3F9 /* Pods_EmulatorAutomatorTests.framework */; };
 		76EB0567954AD4B8D45DFF28 /* Pods_EmulatorAutomator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48CBAF5E4A9E19023C0124C0 /* Pods_EmulatorAutomator.framework */; };
-		8E0F2AF7108BAD55C38E6828 /* Pods_EmulatorAutomatorCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14A318B4185DEEFD2F7FCF4E /* Pods_EmulatorAutomatorCommon.framework */; };
 		95EAB3006D630E67783BD98C /* Pods_EmulatorAutomatorJSCService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D869A1D58508ED235DC474B /* Pods_EmulatorAutomatorJSCService.framework */; };
 		DB1A191224139C8200BB178D /* AppSceneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1A191124139C8200BB178D /* AppSceneManager.swift */; };
 		DB1A191524139E1E00BB178D /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1A191424139E1E00BB178D /* MainViewController.swift */; };
@@ -95,6 +94,7 @@
 		DBC8F450245E6E5200CBCB04 /* Highlightr in Frameworks */ = {isa = PBXBuildFile; productRef = DBC8F44F245E6E5200CBCB04 /* Highlightr */; };
 		DBC8F453245E7D6400CBCB04 /* DebugAreaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC8F452245E7D6400CBCB04 /* DebugAreaViewController.swift */; };
 		DBC8F455245E7D8A00CBCB04 /* ContentSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC8F454245E7D8A00CBCB04 /* ContentSplitViewController.swift */; };
+		DBCB356824961461009AE5D6 /* Pods_EmulatorAutomatorCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14A318B4185DEEFD2F7FCF4E /* Pods_EmulatorAutomatorCommon.framework */; };
 		DBCFE9EA241BD92400388BB8 /* ScreencapService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCFE9E9241BD92400388BB8 /* ScreencapService.swift */; };
 		DBCFE9ED241D021900388BB8 /* ProjectOutlineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCFE9EC241D021900388BB8 /* ProjectOutlineViewController.swift */; };
 		DBE1B985246061B4007544B0 /* ScreencapAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE1B984246061B4007544B0 /* ScreencapAction.swift */; };
@@ -107,6 +107,8 @@
 		DBF93AFE241A65C2000EE733 /* ScreencapContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF93AFD241A65C2000EE733 /* ScreencapContentView.swift */; };
 		DBF93B02241A6D60000EE733 /* UserDefaultsPreference in Frameworks */ = {isa = PBXBuildFile; productRef = DBF93B01241A6D60000EE733 /* UserDefaultsPreference */; };
 		DBF93B04241A6DA1000EE733 /* MainWindowPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF93B03241A6DA1000EE733 /* MainWindowPreference.swift */; };
+		DBFC378B24A45BE3004BFE20 /* EmulatorAutomatorCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CAD252468657700F970FE /* EmulatorAutomatorCommon.framework */; };
+		DBFC378E24A74647004BFE20 /* OpenCVService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCB356B249619B9009AE5D6 /* OpenCVService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,6 +134,13 @@
 			remoteInfo = EmulatorAutomatorCommon;
 		};
 		DB8CAD35246865A500F970FE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DB46D529241293E0009628A3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DB8CAD242468657700F970FE;
+			remoteInfo = EmulatorAutomatorCommon;
+		};
+		DBFC378C24A45BE3004BFE20 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DB46D529241293E0009628A3 /* Project object */;
 			proxyType = 1;
@@ -271,6 +280,8 @@
 		DBC8F452245E7D6400CBCB04 /* DebugAreaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugAreaViewController.swift; sourceTree = "<group>"; };
 		DBC8F454245E7D8A00CBCB04 /* ContentSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentSplitViewController.swift; sourceTree = "<group>"; };
 		DBC8F456245EA89500CBCB04 /* JavaScriptCoreHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JavaScriptCoreHelper.swift; sourceTree = "<group>"; };
+		DBCB356424961440009AE5D6 /* OpenCVBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = OpenCVBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DBCB356B249619B9009AE5D6 /* OpenCVService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenCVService.swift; sourceTree = "<group>"; };
 		DBCFE9E9241BD92400388BB8 /* ScreencapService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreencapService.swift; sourceTree = "<group>"; };
 		DBCFE9EC241D021900388BB8 /* ProjectOutlineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectOutlineViewController.swift; sourceTree = "<group>"; };
 		DBD3DA40241AB797000823CA /* CommonOSLog */ = {isa = PBXFileReference; lastKnownFileType = folder; name = CommonOSLog; path = ../CommonOSLog; sourceTree = "<group>"; };
@@ -291,6 +302,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DBFC378B24A45BE3004BFE20 /* EmulatorAutomatorCommon.framework in Frameworks */,
 				DB2F46F82467EE4D00E5FDE7 /* AdbAutomator in Frameworks */,
 				DB8CAD33246865A500F970FE /* EmulatorAutomatorCommon.framework in Frameworks */,
 				DB34AEAE246AF22500C9D3CF /* CommonOSLogDynamic in Frameworks */,
@@ -329,7 +341,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8E0F2AF7108BAD55C38E6828 /* Pods_EmulatorAutomatorCommon.framework in Frameworks */,
+				DBCB356824961461009AE5D6 /* Pods_EmulatorAutomatorCommon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -685,6 +697,7 @@
 		DB8CAD262468657700F970FE /* EmulatorAutomatorCommon */ = {
 			isa = PBXGroup;
 			children = (
+				DBCB356B249619B9009AE5D6 /* OpenCVService.swift */,
 				DB8CAD312468659200F970FE /* XPC+Error.swift */,
 				DB8CAD272468657700F970FE /* EmulatorAutomatorCommon.h */,
 				DB8CAD282468657700F970FE /* Info.plist */,
@@ -728,6 +741,7 @@
 		DBC3F2482412A8B500A8A6DD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DBCB356424961440009AE5D6 /* OpenCVBridge.framework */,
 				DBBE77F1241831E80025DC63 /* libresolv.tbd */,
 				48CBAF5E4A9E19023C0124C0 /* Pods_EmulatorAutomator.framework */,
 				14A318B4185DEEFD2F7FCF4E /* Pods_EmulatorAutomatorCommon.framework */,
@@ -856,6 +870,7 @@
 			);
 			dependencies = (
 				DB8CAD36246865A500F970FE /* PBXTargetDependency */,
+				DBFC378D24A45BE3004BFE20 /* PBXTargetDependency */,
 			);
 			name = EmulatorAutomatorJSCService;
 			packageProductDependencies = (
@@ -1230,6 +1245,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB8CAD322468659200F970FE /* XPC+Error.swift in Sources */,
+				DBFC378E24A74647004BFE20 /* OpenCVService.swift in Sources */,
 				DBB07A85248CE2BE00B291A9 /* Node.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1256,6 +1272,11 @@
 			isa = PBXTargetDependency;
 			target = DB8CAD242468657700F970FE /* EmulatorAutomatorCommon */;
 			targetProxy = DB8CAD35246865A500F970FE /* PBXContainerItemProxy */;
+		};
+		DBFC378D24A45BE3004BFE20 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DB8CAD242468657700F970FE /* EmulatorAutomatorCommon */;
+			targetProxy = DBFC378C24A45BE3004BFE20 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1287,6 +1308,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
+					"@loader_path/../../../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mainasuk.EmulatorAutomator.JavaScriptCoreService;
@@ -1314,6 +1336,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
+					"@loader_path/../../../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mainasuk.EmulatorAutomator.JavaScriptCoreService;

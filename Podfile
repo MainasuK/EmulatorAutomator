@@ -1,13 +1,12 @@
-# Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
+platform :osx, '10.15'
+
 
 target 'EmulatorAutomator' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
 
   # Pods for EmulatorAutomator
-  pod 'OpenCVBridge', :git => 'https://github.com/MainasuK/OpenCVBridge.git'
-
+  
   target 'EmulatorAutomatorTests' do
     inherit! :search_paths
     # Pods for testing
@@ -20,6 +19,7 @@ target 'EmulatorAutomatorCommon' do
   use_frameworks!
 
   # Pods for EmulatorAutomatorCommon
+  pod 'OpenCVBridge', :git => 'https://github.com/MainasuK/OpenCVBridge.git'
 
 end
 
@@ -30,3 +30,4 @@ target 'EmulatorAutomatorJSCService' do
   # Pods for EmulatorAutomatorJSCService
 
 end
+
