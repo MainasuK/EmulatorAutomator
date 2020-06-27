@@ -143,11 +143,63 @@ extension EditorViewController {
     
 }
 
+extension EditorViewController {
+    
+    @objc func shiftLeft(_ sender: NSMenuItem) {
+        let selectedRange = editorTextView.selectedRange()
+        let nsString = editorTextView.string as NSString
+        let lineRange = nsString.lineRange(for: selectedRange)
+        let oldLines = nsString.substring(with: lineRange).replacingOccurrences(of: "\\s+$", with: "", options: .regularExpression)
+        let newLines = oldLines.replacingOccurrences(of: "    ", with: "")
+        
+        // make undo manager works
+        if editorTextView.shouldChangeText(in: NSRange(location: lineRange.location, length: lineRange.length), replacementString: newLines),
+            let attributedString = self.textStorage.highlightr.highlight(newLines) {
+            textStorage.replaceCharacters(in: NSRange(location: lineRange.location, length: lineRange.length), with: attributedString)
+            if selectedRange.length == 0 {
+                editorTextView.setSelectedRange(NSRange(location: selectedRange.location + 4, length: 0))
+            } else {
+                editorTextView.setSelectedRange(NSRange(location: selectedRange.location + 4, length: (newLines as NSString).length))
+            }
+            editorTextView.didChangeText()
+        }
+    }
+    
+    @objc func shiftRight(_ sender: NSMenuItem) {
+        let selectedRange = editorTextView.selectedRange()
+        let nsString = editorTextView.string as NSString
+        let lineRange = nsString.lineRange(for: selectedRange)
+        let oldLines = nsString.substring(with: lineRange).replacingOccurrences(of: "\\s+$", with: "", options: .regularExpression)
+        let newLines = "    " + oldLines.replacingOccurrences(of: "\n", with: "\n    ")
+        
+        // make undo manager works
+        if editorTextView.shouldChangeText(in: NSRange(location: lineRange.location, length: lineRange.length), replacementString: newLines),
+        let attributedString = self.textStorage.highlightr.highlight(newLines) {
+            textStorage.replaceCharacters(in: NSRange(location: lineRange.location, length: lineRange.length), with: attributedString)
+            if selectedRange.length == 0 {
+                editorTextView.setSelectedRange(NSRange(location: selectedRange.location + 4, length: 0))
+            } else {
+                editorTextView.setSelectedRange(NSRange(location: selectedRange.location + 4, length: (newLines as NSString).length))
+            }
+            editorTextView.didChangeText()
+        }
+    }
+    
+}
+
 // MARK: - NSTextViewDelegate
 extension EditorViewController: NSTextViewDelegate {
     
-    func textDidBeginEditing(_ notification: Notification) {
+    func textView(_ textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
+        if commandSelector == #selector(insertTab(_:)) {
+            textView.insertText("    ", replacementRange: textView.selectedRange())
+            return true
+        }
+        
+        return false
     }
+    
+    func textDidBeginEditing(_ notification: Notification) { }
     
     func textDidChange(_ notification: Notification) {
         document?.objectDidBeginEditing(self)
@@ -160,8 +212,7 @@ extension EditorViewController: NSTextViewDelegate {
         document?.updateChangeCount(.changeDone)
     }
     
-    func textDidEndEditing(_ notification: Notification) {
-    }
+    func textDidEndEditing(_ notification: Notification) { }
     
     func undoManager(for view: NSTextView) -> UndoManager? {
         return document?.undoManager
