@@ -8,6 +8,7 @@
 
 import Cocoa
 import Combine
+import EmulatorAutomatorCommon
 
 struct ScreencapState {
     var content = Content()
@@ -16,11 +17,17 @@ struct ScreencapState {
 
 extension ScreencapState {
     struct Content {
-        var screencap = NSImage()
+        var screencap = NSImage() {
+            didSet { screencapPublisher.send(screencap) }
+        }
+        let screencapPublisher = PassthroughSubject<NSImage, Never>()
+    
+        var selectionFrame = CGRect.zero {            // relative to image
+            didSet { selectionFramePublisher.send(selectionFrame) }
+        }
+        let selectionFramePublisher = PassthroughSubject<CGRect, Never>()
+
         var error: ScreencapError?
-        
-        var selectionFrame = CGRect.zero            // relative to image
-        // var screencapSelectionRegion = CGRect.zero  // actually image crop region in pixel
     }
 }
     
@@ -34,6 +41,9 @@ extension ScreencapState {
         }
         
         var scriptGenerationType: ScriptGenerationType = .tapInTheCenterOfSelection
+        var flannMatchingImage = NSImage()
+        
+        var featureMatchingResult = OpenCVService.FeatureMatchingResult()
     }
 }
 

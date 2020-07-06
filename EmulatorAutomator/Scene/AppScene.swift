@@ -21,8 +21,8 @@ enum AppScene: ManagableScene {
     var windowMinSize: NSSize {
         switch self {
         case .screencap:
-            // magic 759 make screencap fit & fill 
-            return NSSize(width: 759 + ScreencapSplitViewController.utilityMinimumThickness, height: 450)
+            // magic 1241 make screencap fit & fill 
+            return NSSize(width: 1241 + ScreencapSplitViewController.utilityMinimumThickness, height: 720)
         default:
             return NSSize(width: 800, height: 450)
         }
