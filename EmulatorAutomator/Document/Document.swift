@@ -8,6 +8,7 @@
 
 import Cocoa
 import CommonOSLog
+import MessagePack
 
 class Document: NSDocument {
         
@@ -58,12 +59,30 @@ class Document: NSDocument {
         }
         
         // update sources
-        let sourcesWrapper = fileWrappers[Content.Node.sourcesFileName]
-        if sourcesWrapper == nil {
-            let sourcesData = try PropertyListEncoder().encode(content.sources)
-            documentFileWrapper.addRegularFile(withContents: sourcesData, preferredFilename: Content.Node.sourcesFileName)
-        }
+        let sourcesDirectory: FileWrapper = {
+            if let fileWrapper = fileWrappers[FileWrapper.sourcesDirectoryName] {
+                return fileWrapper
+            } else {
+                let fileWrapper = FileWrapper(directoryWithFileWrappers: [:])
+                fileWrapper.preferredFilename = FileWrapper.sourcesDirectoryName
+                return fileWrapper
+            }
+        }()
+        save(nodes: content.sources, in: sourcesDirectory)
+        documentFileWrapper.addFileWrapper(sourcesDirectory)
 
+        // update assets
+        let assetDirectory: FileWrapper = {
+            if let fileWrapper = fileWrappers[FileWrapper.assetsDirectoryName] {
+                return fileWrapper
+            } else {
+                let fileWrapper = FileWrapper(directoryWithFileWrappers: [:])
+                fileWrapper.preferredFilename = FileWrapper.assetsDirectoryName
+                return fileWrapper
+            }
+        }()
+        save(nodes: content.assets, in: assetDirectory)
+        documentFileWrapper.addFileWrapper(assetDirectory)
         
         return documentFileWrapper
     }
@@ -89,83 +108,151 @@ class Document: NSDocument {
         content.meta = try PropertyListDecoder().decode(Content.Meta.self, from: metaData)
         
         // read sources
-        if let sourcesWrapper = fileWrappers[Content.Node.sourcesFileName],
-        let sourcesData = sourcesWrapper.regularFileContents {
-            content.sources = try PropertyListDecoder().decode([Content.Node].self, from: sourcesData)
-        } else {
-            content.sources = []
+        if let sourcesFileWrapper = fileWrappers[FileWrapper.sourcesDirectoryName] {
+            content.sources = read(in: sourcesFileWrapper)
         }
-//
-//        // read assets
-//        if let assetsWrapper = fileWrappers[FileWrapper.assetsFileName], assetsWrapper.isDirectory {
-//            content.assets = traverse(fileWrapper: assetsWrapper)
-//        }
+        
+        // read assets
+        if let assetsFileWrapper = fileWrappers[FileWrapper.assetsDirectoryName] {
+            content.assets = read(in: assetsFileWrapper)
+        }
     }
     
 }
 
 extension Document {
     
-    // traverse on root file wrapper to build node tree
-//    private func traverse(fileWrapper: FileWrapper) -> [Content.Node] {
-//        guard let fileWrappers = fileWrapper.fileWrappers else { return [] }
-//
-//        var children: [Content.Node] = []
-//        for (key, value) in fileWrappers {
-//            if value.isDirectory {
-//                children.append(Content.Node(name: key, children: traverse(fileWrapper: value)))
-//            } else if value.isRegularFile {
-//                guard let fileContents = value.regularFileContents else { continue }
-//                children.append(Content.Node(name: key, content: fileContents))
-//            } else {
-//                continue
-//            }
-//        }
-//
-//        return children
-//    }
+    private func save(nodes: [Content.Node], in fileWrapper: FileWrapper) {
+        guard fileWrapper.isDirectory else {
+            assertionFailure()
+            return
+        }
+        
+        for node in nodes {
+            switch node.content {
+            case .directory:
+                let directory = FileWrapper(directoryWithFileWrappers: [:])
+                directory.preferredFilename = node.name
+                fileWrapper.addFileWrapper(directory)
+                save(nodes: node.children, in: directory)
+            default:
+                guard fileWrapper.fileWrappers?[node.id.uuidString] == nil else {
+                    continue
+                }
+                do {
+                    let encoded = try MessagePackEncoder().encode(node)
+                    fileWrapper.addRegularFile(withContents: encoded, preferredFilename: node.id.uuidString)
+                } catch {
+                    assertionFailure(error.localizedDescription)
+                }
+            }
+        }
+    }
+
+    private func read(in directoryFileWrapper: FileWrapper) -> [Content.Node] {
+        guard directoryFileWrapper.isDirectory, let fileWrappers = directoryFileWrapper.fileWrappers else {
+            assertionFailure()
+            return []
+        }
+        
+        var nodes: [Content.Node] = []
+        for (filename, fileWrapper) in fileWrappers {
+            if fileWrapper.isDirectory {
+                let directoryNode = Content.Node(name: filename, content: .directory)
+                directoryNode.children = read(in: fileWrapper)
+                nodes.append(directoryNode)
+            } else if fileWrapper.isRegularFile, let content = fileWrapper.regularFileContents {
+                do {
+                    let node = try MessagePackDecoder().decode(Content.Node.self, from: content)
+                    nodes.append(node)
+                } catch {
+                    assertionFailure()
+                    continue
+                }
+            }
+        }
+        
+        return nodes
+    }
+    
+    private func invalid(node: Content.Node, in fileWrapper: FileWrapper) {
+        guard fileWrapper.isDirectory else {
+            assertionFailure()
+            return
+        }
+        
+        for (filename, innerFileWrapper) in fileWrapper.fileWrappers ?? [:] {
+            if innerFileWrapper.isDirectory {
+                invalid(node: node, in: innerFileWrapper)
+            } else if innerFileWrapper.isRegularFile, filename == node.id.uuidString {
+                fileWrapper.removeFileWrapper(innerFileWrapper)
+                break
+            } else {
+                continue
+            }
+        }
+    }
     
 }
 
 extension Document {
-
-//    func invalidContentSouces() {
-//        if let sourcesFileWrapper = documentFileWrapper.fileWrappers?[Content.Node.sourcesFileName] {
-//            documentFileWrapper.removeFileWrapper(sourcesFileWrapper)
-//        }
-//    }
+    
+    enum NodeType {
+        case source
+        case asset
+    }
     
     // Update node name
-    func updateSources(for contentNode: Content.Node, name: String) {
-        contentNode.name = name
+    func update(node: Content.Node) {
         content.objectWillChange.send()
-        
-        // invalid file wrapper
-        if let sourcesFileWrapper = documentFileWrapper.fileWrappers?[Content.Node.sourcesFileName] {
-            documentFileWrapper.removeFileWrapper(sourcesFileWrapper)
-        }
-    }
 
-    // Update file data
-    func updateSources(for contentNode: Content.Node, content: String) {
-        contentNode.content = content
-        
-        // invalid file wrapper
-        if let sourcesFileWrapper = documentFileWrapper.fileWrappers?[Content.Node.sourcesFileName] {
-            documentFileWrapper.removeFileWrapper(sourcesFileWrapper)
-        }
+        invalid(node: node, in: documentFileWrapper)
     }
     
     // Update file data
-    func createSourceNode(node: Content.Node) {
-        guard !content.sources.contains(node) else { return }
-        content.sources.append(node)
-        content.objectWillChange.send()
-        
-        // invalid file wrapper
-        if let sourcesFileWrapper = documentFileWrapper.fileWrappers?[Content.Node.sourcesFileName] {
-            documentFileWrapper.removeFileWrapper(sourcesFileWrapper)
+    func create(node: Content.Node, type: NodeType) {
+        switch type {
+        case .source:
+            guard !content.sources.contains(node) else { return }
+            content.sources.append(node)
+        case .asset:
+            guard !content.assets.contains(node) else { return }
+            content.assets.append(node)
         }
+        
+        content.objectWillChange.send()
+    }
+    
+    func delete(node: Content.Node, type: NodeType) {
+        invalid(node: node, in: documentFileWrapper)
+        
+        switch type {
+        case .source:
+            content.sources = delete(node: node, in: content.sources)
+        case .asset:
+            content.assets = delete(node: node, in: content.assets)
+        }
+        
+        content.objectWillChange.send()
+    }
+    
+    private func delete(node: Content.Node, in nodes: [Content.Node]) -> [Content.Node] {
+        var nodes = nodes
+        
+        if let index = nodes.firstIndex(where: { $0.id == node.id }) {
+            nodes.remove(at: index)
+        } else {
+            for directory in nodes {
+                switch directory.content {
+                case .directory:
+                    directory.children = delete(node: node, in: directory.children)
+                default:
+                    continue
+                }
+            }
+        }
+        
+        return nodes
     }
     
 }

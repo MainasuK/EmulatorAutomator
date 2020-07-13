@@ -6,6 +6,7 @@
 //  Copyright © 2020 MainasuK Cirno. All rights reserved.
 //
 
+import os
 import Cocoa
 import Combine
 import SwiftUI
@@ -28,6 +29,19 @@ final class ScreencapViewController: NSViewController {
     
     override func loadView() {
         view = NSView()
+    }
+    
+    override var representedObject: Any? {
+        didSet {
+            // Pass down the represented object to all of the child view controllers.
+            for child in children {
+                child.representedObject = representedObject
+            }
+        }
+    }
+    
+    weak var document: Document? {
+        return representedObject as? Document
     }
     
 }
@@ -54,6 +68,28 @@ extension ScreencapViewController {
         viewModel.screencapTriggerRelay
             .sink { [weak self] _ in
                 self?.screencapStore.dispatch(.takeScreenshot)
+            }
+            .store(in: &disposeBag)
+        
+        screencapStore.screencapState.utility.saveAssetActionPublisher
+            .sink { [weak self] image in
+                guard let `self` = self else { return }
+                guard let window = self.view.window else { return }
+                
+                guard let document = self.document else {
+                    assertionFailure()
+                    return
+                }
+                
+                let saveAssetWindowController = AppSceneManager.shared.open(.saveAsset(document: document, screencapStore: self.screencapStore))
+                guard let saveAssetWindow = saveAssetWindowController.window else {
+                    assertionFailure()
+                    return
+                }
+                window.beginSheet(saveAssetWindow) { response in
+                    os_log(.info, log: .debug, "%{public}s[%{public}ld], %{public}s: save asset modal response", ((#file as NSString).lastPathComponent), #line, #function, String(describing: response))
+                    saveAssetWindow.close()
+                }
             }
             .store(in: &disposeBag)
     }

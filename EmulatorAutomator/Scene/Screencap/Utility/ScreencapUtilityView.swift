@@ -135,14 +135,26 @@ extension ScreencapUtilityView {
                     .background(Text("Make selection region\non the left image").multilineTextAlignment(.center))
                     .frame(maxWidth: .infinity, maxHeight: 200)
                     .background(Color.gray)
-                Button(action: {
-                    guard let image = self.store.screencapState.utility.featureMatchingResult.previewImage else { return }
-                    let hostingView = NSHostingView(rootView: self.createPreviewView(preview: image))
-                    (NSApp.delegate as? AppDelegate)?.showWindow(with: hostingView)
-                }, label: {
-                    Text("Preview")
-                })
-                .disabled(self.store.screencapState.utility.featureMatchingResult.previewImage == nil)
+                HStack {
+                    Toggle(isOn: $store.screencapState.utility.isPreviewPinned) {
+                        Text("Pin")
+                    }
+                    Button(action: {
+                        guard let image = self.store.screencapState.utility.featureMatchingResult.previewImage else { return }
+                        let hostingView = NSHostingView(rootView: self.createPreviewView(preview: image))
+                        (NSApp.delegate as? AppDelegate)?.showWindow(with: hostingView)
+                    }, label: {
+                        Text("Preview")
+                    })
+                    .disabled(self.store.screencapState.utility.featureMatchingResult.previewImage == nil)
+                    Button(action: {
+                        self.store.screencapState.utility.saveAssetActionPublisher
+                            .send(self.store.screencapState.utility.flannMatchingImage)
+                    }, label: {
+                        Text("Save as Asset")
+                    })
+                    .disabled(!self.store.screencapState.utility.flannMatchingImage.isValid)
+                }
             }
             .padding(.leading, 20)
         }

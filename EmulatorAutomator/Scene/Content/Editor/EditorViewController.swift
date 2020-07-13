@@ -28,7 +28,13 @@ final class EditorViewControllerViewModel {
         currentSelectionContentNode
             .compactMap { node -> Document.Content.Node? in
                 guard let node = node else { return nil }
-                return node.isFile ? node : nil
+                switch node.content {
+                case .directory:
+                    return nil
+                default:
+                    // only select file node
+                    return node
+                }
             }
             .assign(to: \.value, on: self.latestSelectionFileContentNode)
             .store(in: &disposeBag)
@@ -128,13 +134,14 @@ extension EditorViewController {
             .sink { [weak self] contentNode in
                 guard let `self` = self else { return }
                 guard let contentNode = contentNode  else { return }
+                guard case let .plaintext(text) = contentNode.content else { return }
                 
-                guard !contentNode.content.elementsEqual(self.editorTextView.attributedString().string) else {
+                guard !text.elementsEqual(self.editorTextView.attributedString().string) else {
                     // fix blink update issue
                     return
                 }
                 
-                if let attributedString = self.textStorage.highlightr.highlight(contentNode.content) {
+                if let attributedString = self.textStorage.highlightr.highlight(text) {
                     self.textStorage.setAttributedString(attributedString)
                 }
             }
@@ -204,7 +211,8 @@ extension EditorViewController: NSTextViewDelegate {
     func textDidChange(_ notification: Notification) {
         document?.objectDidBeginEditing(self)
         if let node = viewModel.latestSelectionFileContentNode.value {
-            document?.updateSources(for: node, content: editorTextView.attributedString().string)
+            node.content = .plaintext(editorTextView.attributedString().string)
+            document?.update(node: node)
         }
         document?.objectDidEndEditing(self)
         

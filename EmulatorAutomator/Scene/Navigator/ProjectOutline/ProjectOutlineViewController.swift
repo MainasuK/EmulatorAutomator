@@ -71,6 +71,13 @@ final class ProjectOutlineViewController: NSViewController {
         return button
     }()
     
+    private(set) lazy var deleteButton: NSButton = {
+        let button = NSButton(image: NSImage(named: NSImage.removeTemplateName)!, target: self, action: #selector(ProjectOutlineViewController.deleteButtonPressed(_:)))
+        button.isBordered = false
+        button.setButtonType(.momentaryPushIn)
+        return button
+    }()
+    
     struct NotificationName {
         static let selectionChanged = Notification.Name("selectionChanged")
     }
@@ -91,7 +98,7 @@ extension ProjectOutlineViewController {
         bottomToolbarStackView.spacing = 0
         
         bottomToolbarStackView.addArrangedSubview(addButton)
-        //bottomToolbarStackView.addArrangedSubview(removeButton)
+        bottomToolbarStackView.addArrangedSubview(deleteButton)
         
         bottomToolbarStackView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(bottomToolbarStackView)
@@ -101,8 +108,8 @@ extension ProjectOutlineViewController {
             bottomToolbarStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             addButton.widthAnchor.constraint(equalToConstant: 22),
             addButton.heightAnchor.constraint(equalTo: addButton.widthAnchor, multiplier: 1.0),
-            //removeButton.widthAnchor.constraint(equalToConstant: 22),
-            //removeButton.heightAnchor.constraint(equalTo: removeButton.widthAnchor, multiplier: 1.0),
+            deleteButton.widthAnchor.constraint(equalToConstant: 22),
+            deleteButton.heightAnchor.constraint(equalTo: deleteButton.widthAnchor, multiplier: 1.0),
         ])
         
         // Layout outlineView
@@ -142,6 +149,15 @@ extension ProjectOutlineViewController {
         if self.treeController.arrangedObjects.children?.isEmpty == false {
             self.outlineView.expandItem(self.treeController.arrangedObjects.children![0], expandChildren: true)
         }
+        
+        // Setup outline selection listener
+        NotificationCenter.default.addObserver(self, selector: #selector(ProjectOutlineViewController.outlineViewSelectionChange(_:)), name: ProjectOutlineViewController.NotificationName.selectionChanged, object: nil)
+        
+        viewModel.currentSelectionContentNode
+            .sink { [weak self] node in
+                self?.deleteButton.isEnabled = node != nil
+            }
+            .store(in: &disposeBag)
     }
     
 }
@@ -162,8 +178,62 @@ extension ProjectOutlineViewController {
             suffix += 1
         }
     
-        let node = Document.Content.Node(name: filename + fileExtension, content: "")
-        document.createSourceNode(node: node)
+        let node = Document.Content.Node(name: filename + fileExtension, content: .plaintext(""))
+        document.create(node: node, type: .source)
+    }
+    
+    @objc private func deleteButtonPressed(_ sender: NSButton) {
+        os_log(.info, log: .interaction, "%{public}s[%{public}ld], %{public}s", ((#file as NSString).lastPathComponent), #line, #function)
+
+        guard let document = document else {
+            assertionFailure()
+            return
+        }
+        
+        guard let contentNode = viewModel.currentSelectionContentNode.value else {
+            assertionFailure()
+            return
+        }
+        
+        let alert = NSAlert()
+        alert.messageText = "Confirm delete file."
+        alert.informativeText = contentNode.name
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "Delete")
+        alert.addButton(withTitle: "Cancel")
+        
+        guard let window = view.window else {
+            if alert.runModal() == .alertFirstButtonReturn {
+                document.delete(node: contentNode, type: .source)
+            }
+            
+            return
+        }
+        
+        alert.beginSheetModal(for: window) { response in
+            guard response == .alertFirstButtonReturn else {
+                return
+            }
+            
+            document.delete(node: contentNode, type: .source)
+        }
+    }
+    
+    @objc private func outlineViewSelectionChange(_ notification: Notification) {
+        guard let outlineViewController = notification.object as? ProjectOutlineViewController,
+        let remoteDocument = outlineViewController.representedObject as? Document,
+        let document = representedObject as? Document,
+        remoteDocument === document else {
+            return
+        }
+        
+        guard let selectionIndexPath = outlineViewController.treeController.selectionIndexPath,
+        let selectionTreeNode = outlineViewController.treeController.arrangedObjects.descendant(at: selectionIndexPath) else {
+            viewModel.currentSelectionTreeNode.send(nil)
+            return
+        }
+
+        viewModel.currentSelectionTreeNode.send(selectionTreeNode)
     }
     
 }

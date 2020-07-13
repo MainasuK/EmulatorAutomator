@@ -51,9 +51,13 @@ class JavaScriptCoreHelper {
             os_log(.info, log: .debug, "%{public}s[%{public}ld], %{public}s: not found %s", ((#file as NSString).lastPathComponent), #line, #function, lastPathComponent)
             return ""
         }
-        let content = node.content
-        os_log(.info, log: .debug, "%{public}s[%{public}ld], %{public}s: %s : length %d", ((#file as NSString).lastPathComponent), #line, #function, lastPathComponent, content.count)
-        return content
+        switch node.content {
+        case .plaintext(let script):
+            return script
+            os_log(.info, log: .debug, "%{public}s[%{public}ld], %{public}s: %s", ((#file as NSString).lastPathComponent), #line, #function, lastPathComponent)
+        default:
+            return ""
+        }
     }
     
     lazy var runInThisContext: @convention(block) (_ content: String, _ options: JSValue) -> JSValue? = { [unowned self] content, options in

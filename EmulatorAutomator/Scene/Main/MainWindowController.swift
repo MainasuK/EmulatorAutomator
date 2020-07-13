@@ -189,7 +189,8 @@ extension MainWindowController {
 
         guard let document = contentViewController?.representedObject as? Document else { return }
         
-        AppSceneManager.shared.open(.screencap(document: document))
+        let windowController = AppSceneManager.shared.open(.screencap(document: document))
+        windowController.contentViewController?.representedObject = document
         
 //        let windowController = AppSceneManager.shared.open(.main(document: document))
 //        document.addWindowController(windowController)

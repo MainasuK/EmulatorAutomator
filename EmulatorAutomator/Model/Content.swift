@@ -48,26 +48,25 @@ extension Document.Content {
     }
 }
 
-fileprivate extension Document.Content {
-    static let defaultScriptFileName = "main.js"
-    static let defaultScriptFileContent = "console.log('Hello, world!');\n"
-}
-
 extension Document.Content {
     typealias Node = EmulatorAutomatorCommon.Node
 }
 
 extension Document.Content.Node {
     static var defaultScriptNode: Node {
-        return Node(name: Document.Content.defaultScriptFileName, content: Document.Content.defaultScriptFileContent)
+        return Node(name: "main.js", content: .plaintext("console.log('Hello, world!');\n"))
     }
     
     static let sourcesFileName = "sources.ea"
 }
 
 extension FileWrapper {
+
+    static let sourcesDirectoryName = "Sources"
+    static let assetsDirectoryName = "Assets"
+    
 //    static let sourcesFileName = "sources.ea"
-    static let assetsFileName = "Assets"
+//    static let assetsFileName = "Assets"
     
 //    static var sources: FileWrapper {
 //        let scriptWrapper = FileWrapper(regularFileWithContents: Content.defaultScriptFileData)

@@ -43,7 +43,14 @@ extension ScreencapState {
         var scriptGenerationType: ScriptGenerationType = .tapInTheCenterOfSelection
         var flannMatchingImage = NSImage()
         
+        var isPreviewPinned = false {
+            didSet { isPreviewPinnedPublisher.send(isPreviewPinned) }
+        }
+        let isPreviewPinnedPublisher = PassthroughSubject<Bool, Never>()
+        
         var featureMatchingResult = OpenCVService.FeatureMatchingResult()
+        
+        let saveAssetActionPublisher = PassthroughSubject<NSImage, Never>()
     }
 }
 

@@ -62,5 +62,13 @@ final class ScreencapStore: ObservableObject {
 
         return (screencapState, screencapCommand)
     }
+    
+}
 
+extension ScreencapStore: Equatable {
+    
+    static func == (lhs: ScreencapStore, rhs: ScreencapStore) -> Bool {
+        return lhs === rhs
+    }
+    
 }

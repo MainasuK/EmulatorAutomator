@@ -86,6 +86,9 @@ final class ScreencapContentViewModel: ObservableObject {
     let selectionFrame = CurrentValueSubject<CGRect, Never>(.zero)
     var selectionFrameSubscription: AnyCancellable?
     
+    let isPreviewPinned = CurrentValueSubject<Bool, Never>(false)
+    var isPreviewPinnedSubscription: AnyCancellable?
+    
     // output
     // image of selection region from the screencap
     let targetImage = CurrentValueSubject<NSImage, Never>(NSImage())
@@ -95,6 +98,8 @@ final class ScreencapContentViewModel: ObservableObject {
     var featureMatchingResultSubscription: AnyCancellable?
     
     init() {
+        let croppedImage = CurrentValueSubject<NSImage, Never>(NSImage())
+        
         Publishers.CombineLatest(screencap.eraseToAnyPublisher(), selectionFrame.eraseToAnyPublisher())
             .map { screencap, selectionFrame in
                 guard screencap.isValid, screencap.size != .zero, selectionFrame != .zero else {
@@ -110,6 +115,12 @@ final class ScreencapContentViewModel: ObservableObject {
                 
                 return NSImage(cgImage: croppedImage, size: cropRect.size)
             }
+            .assign(to: \.value, on: croppedImage)
+            .store(in: &disposeBag)
+        
+        Publishers.CombineLatest(croppedImage.eraseToAnyPublisher(), isPreviewPinned.eraseToAnyPublisher())
+            .filter { !$1 }
+            .map { croppedImage, _ in croppedImage }
             .assign(to: \.value, on: targetImage)
             .store(in: &disposeBag)
                 
@@ -199,6 +210,8 @@ struct ScreencapContentView: View {
                 .assign(to: \.value, on: self.viewModel.screencap)
             self.viewModel.selectionFrameSubscription = self.store.screencapState.content.selectionFramePublisher
                 .assign(to: \.value, on: self.viewModel.selectionFrame)
+            self.viewModel.isPreviewPinnedSubscription = self.store.screencapState.utility.isPreviewPinnedPublisher
+                .assign(to: \.value, on: self.viewModel.isPreviewPinned)
             
             // use dispatcher update source
             self.viewModel.targetImageSubscription = self.viewModel.targetImage

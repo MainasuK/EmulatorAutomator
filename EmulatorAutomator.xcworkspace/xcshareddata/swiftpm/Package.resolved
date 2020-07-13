@@ -27,6 +27,15 @@
           "revision": "c2ecdec085f78cdbc0323ec4d44d297e5e6a0379",
           "version": "3.0.0"
         }
+      },
+      {
+        "package": "MessagePack",
+        "repositoryURL": "https://github.com/Flight-School/MessagePack",
+        "state": {
+          "branch": null,
+          "revision": "688d9c83e4e87070835fd45016e869e4e03e7319",
+          "version": "1.2.3"
+        }
       }
     ]
   },
