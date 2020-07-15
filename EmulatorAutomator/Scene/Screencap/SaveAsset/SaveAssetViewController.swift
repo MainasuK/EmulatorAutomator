@@ -52,6 +52,10 @@ final class SaveAssetViewController: NSViewController {
         view.wantsLayer = true
     }
     
+    weak var document: Document? {
+        return representedObject as? Document
+    }
+    
     deinit {
         os_log(.info, log: .debug, "%{public}s[%{public}ld], %{public}s", ((#file as NSString).lastPathComponent), #line, #function)
     }
@@ -121,7 +125,32 @@ extension SaveAssetViewController {
 extension SaveAssetViewController {
     
     @objc private func createButtonPressed(_ sender: NSButton) {
+        guard let window = view.window, let parentWindow = window.sheetParent else {
+            return
+        }
+        defer {
+            parentWindow.endSheet(window)
+        }
         
+        guard let document = document else {
+            assertionFailure()
+            return
+        }
+        
+        let filename = assetNameTextField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !filename.isEmpty else {
+            return
+        }
+        let fileExtension = "ea"
+        
+        let image = screencapStore.screencapState.utility.flannMatchingImage
+        guard image.isValid, image.size != .zero else {
+            return
+        }
+        let content = Document.Content.Node.Content.image(image)
+        
+        let node = Document.Content.Node(name: filename + "." + fileExtension, content: content)
+        document.create(node: node, type: .asset)
     }
     
     @objc private func cancelButtonPressed(_ sender: NSButton) {

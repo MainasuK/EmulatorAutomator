@@ -72,10 +72,11 @@ extension AppScene {
             windowController.scene = self
             
             return windowController
-        case .saveAsset(_, let store):
+        case .saveAsset(let document, let store):
             let modalWindowFrame = CGRect(origin: .zero, size: windowMinSize)
             
             let contentViewController = SaveAssetViewController()
+            contentViewController.representedObject = document
             contentViewController.screencapStore = store
             contentViewController.view.frame = modalWindowFrame
             
