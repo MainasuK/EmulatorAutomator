@@ -1,8 +1,8 @@
 //
-//  ProjectOutlineViewController.swift
+//  OutlineViewController.swift
 //  EmulatorAutomator
 //
-//  Created by MainasuK Cirno on 2020/3/14.
+//  Created by Cirno MainasuK on 2020-7-15.
 //  Copyright © 2020 MainasuK Cirno. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import Cocoa
 import Combine
 import CommonOSLog
 
-final class ProjectOutlineViewController: NSViewController {
+class OutlineViewController: NSViewController {
     
     var contentDisposeBag = Set<AnyCancellable>()
     var disposeBag = Set<AnyCancellable>()
@@ -26,8 +26,8 @@ final class ProjectOutlineViewController: NSViewController {
                     .receive(on: DispatchQueue.main)
                     .sink { [weak self] _ in
                         self?.viewModel.content.send(document.content)
-                    }
-                    .store(in: &contentDisposeBag)
+                }
+                .store(in: &contentDisposeBag)
             }
         }
     }
@@ -48,12 +48,12 @@ final class ProjectOutlineViewController: NSViewController {
     }()
     
     enum OutlineColumn: String {
-        case name = "com.mainasuk.EmulatorAutomator.ProjectOutlineViewController.nameColumn"
+        case name = "com.mainasuk.EmulatorAutomator.OutlineViewController.nameColumn"
     }
     
     private(set) lazy var outlineView: NSOutlineView = {
         let outlineView = NSOutlineView()
-    
+        
         let taskColumn = NSTableColumn(identifier: NSUserInterfaceItemIdentifier(OutlineColumn.name.rawValue))
         outlineView.addTableColumn(taskColumn)
         
@@ -65,22 +65,18 @@ final class ProjectOutlineViewController: NSViewController {
     }()
     
     private(set) lazy var addButton: NSButton = {
-        let button = NSButton(image: NSImage(named: NSImage.addTemplateName)!, target: self, action: #selector(ProjectOutlineViewController.addButtonPressed(_:)))
+        let button = NSButton(image: NSImage(named: NSImage.addTemplateName)!, target: self, action: #selector(OutlineViewController.addButtonPressed(_:)))
         button.isBordered = false
         button.setButtonType(.momentaryPushIn)
         return button
     }()
     
     private(set) lazy var deleteButton: NSButton = {
-        let button = NSButton(image: NSImage(named: NSImage.removeTemplateName)!, target: self, action: #selector(ProjectOutlineViewController.deleteButtonPressed(_:)))
+        let button = NSButton(image: NSImage(named: NSImage.removeTemplateName)!, target: self, action: #selector(OutlineViewController.deleteButtonPressed(_:)))
         button.isBordered = false
         button.setButtonType(.momentaryPushIn)
         return button
     }()
-    
-    struct NotificationName {
-        static let selectionChanged = Notification.Name("selectionChanged")
-    }
     
     override func loadView() {
         view = NSView()
@@ -88,7 +84,7 @@ final class ProjectOutlineViewController: NSViewController {
     
 }
 
-extension ProjectOutlineViewController {
+extension OutlineViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -126,7 +122,7 @@ extension ProjectOutlineViewController {
         ])
         
         scrollView.documentView = outlineView
-                
+        
         // Setup treeController
         treeController.bind(
             NSBindingName("contentArray"),
@@ -150,106 +146,44 @@ extension ProjectOutlineViewController {
             self.outlineView.expandItem(self.treeController.arrangedObjects.children![0], expandChildren: true)
         }
         
-        // Setup outline selection listener
-        NotificationCenter.default.addObserver(self, selector: #selector(ProjectOutlineViewController.outlineViewSelectionChange(_:)), name: ProjectOutlineViewController.NotificationName.selectionChanged, object: nil)
-        
+        // Setup view model
         viewModel.currentSelectionContentNode
             .sink { [weak self] node in
                 self?.deleteButton.isEnabled = node != nil
-            }
-            .store(in: &disposeBag)
+        }
+        .store(in: &disposeBag)
     }
     
 }
 
-extension ProjectOutlineViewController {
+extension OutlineViewController {
     
-    @objc private func addButtonPressed(_ sender: NSButton) {
-        os_log(.info, log: .interaction, "%{public}s[%{public}ld], %{public}s", ((#file as NSString).lastPathComponent), #line, #function)
-        guard let document = document else {
-            assertionFailure()
-            return
-        }
-        var filename = "Untitled"
-        var suffix = 1
-        let fileExtension = ".js"
-        while document.content.sources.contains(where: { $0.name == (filename + fileExtension) }) {
-            filename = "Untitled" + "\(suffix)"
-            suffix += 1
-        }
-    
-        let node = Document.Content.Node(name: filename + fileExtension, content: .plaintext(""))
-        document.create(node: node, type: .source)
+    @objc func addButtonPressed(_ sender: NSButton) {
+        // not implement
     }
     
-    @objc private func deleteButtonPressed(_ sender: NSButton) {
-        os_log(.info, log: .interaction, "%{public}s[%{public}ld], %{public}s", ((#file as NSString).lastPathComponent), #line, #function)
-
-        guard let document = document else {
-            assertionFailure()
-            return
-        }
-        
-        guard let contentNode = viewModel.currentSelectionContentNode.value else {
-            assertionFailure()
-            return
-        }
-        
-        let alert = NSAlert()
-        alert.messageText = "Confirm delete file."
-        alert.informativeText = contentNode.name
-        alert.alertStyle = .warning
-        alert.addButton(withTitle: "Delete")
-        alert.addButton(withTitle: "Cancel")
-        
-        guard let window = view.window else {
-            if alert.runModal() == .alertFirstButtonReturn {
-                document.delete(node: contentNode, type: .source)
-            }
-            
-            return
-        }
-        
-        alert.beginSheetModal(for: window) { response in
-            guard response == .alertFirstButtonReturn else {
-                return
-            }
-            
-            document.delete(node: contentNode, type: .source)
-        }
+    @objc func deleteButtonPressed(_ sender: NSButton) {
+        // not implement
     }
     
-    @objc private func outlineViewSelectionChange(_ notification: Notification) {
-        guard let outlineViewController = notification.object as? ProjectOutlineViewController,
-        let remoteDocument = outlineViewController.representedObject as? Document,
-        let document = representedObject as? Document,
-        remoteDocument === document else {
-            return
-        }
-        
-        guard let selectionIndexPath = outlineViewController.treeController.selectionIndexPath,
-        let selectionTreeNode = outlineViewController.treeController.arrangedObjects.descendant(at: selectionIndexPath) else {
-            viewModel.currentSelectionTreeNode.send(nil)
-            return
-        }
-
-        viewModel.currentSelectionTreeNode.send(selectionTreeNode)
+    @objc func outlineViewSelectionChange(_ notification: Notification) {
+        // not implement
     }
     
 }
 
 // MARK: - NSOutlineViewDelegate
-extension ProjectOutlineViewController: NSOutlineViewDelegate {
+extension OutlineViewController: NSOutlineViewDelegate {
     
     func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
         guard let identifier = tableColumn?.identifier,
-        let column = OutlineColumn(rawValue: identifier.rawValue) else {
-            return nil
+            let column = OutlineColumn(rawValue: identifier.rawValue) else {
+                return nil
         }
         
         guard let treeNode = item as? NSTreeNode,
-        let node = treeNode.representedObject as? OutlineViewModel.Node else {
-            return nil
+            let node = treeNode.representedObject as? OutlineViewModel.Node else {
+                return nil
         }
         
         var view: NSTableCellView
@@ -265,7 +199,7 @@ extension ProjectOutlineViewController: NSOutlineViewDelegate {
     }
     
     func outlineViewSelectionDidChange(_ notification: Notification) {
-        NotificationCenter.default.post(name: ProjectOutlineViewController.NotificationName.selectionChanged, object: self)
+        // not implement
     }
     
 }

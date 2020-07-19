@@ -41,7 +41,7 @@ extension UtilityViewController {
         // Setup navigator segmented selection listener
         NotificationCenter.default.addObserver(self, selector: #selector(UtilityViewController.selectionChanged(_:)), name: NavigatorTabViewController.NotificationName.didSelectViewController, object: nil)
         // Setup outline selection listener
-        NotificationCenter.default.addObserver(self, selector: #selector(UtilityViewController.outlineViewSelectionChange(_:)), name: ProjectOutlineViewController.NotificationName.selectionChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UtilityViewController.outlineViewSelectionChange(_:)), name: SourceOutlineViewController.NotificationName.selectionChanged, object: nil)
     }
     
 }
@@ -59,7 +59,7 @@ extension UtilityViewController {
     
     // handle outline selection
     @objc private func outlineViewSelectionChange(_ notification: Notification) {
-        guard let outlineViewController = notification.object as? ProjectOutlineViewController,
+        guard let outlineViewController = notification.object as? SourceOutlineViewController,
         let remoteDocument = outlineViewController.representedObject as? Document,
         let document = representedObject as? Document,
         remoteDocument === document else {
@@ -83,9 +83,9 @@ extension UtilityViewController {
     
     func viewControllerForSelectedViewController(_ viewController: NSViewController?) -> NSViewController? {
         switch viewController {
-        case is ProjectOutlineViewController:
+        case is SourceOutlineViewController:
             return fileUtilityViewController
-        case is AssetTableViewController:
+        case is AssetOutlineViewController:
             return assetUtilityViewController
         default:
             assertionFailure()

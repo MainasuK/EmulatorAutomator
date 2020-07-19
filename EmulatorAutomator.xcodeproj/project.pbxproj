@@ -16,6 +16,10 @@
 		DB1EA8782460162000D5268F /* PathControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1EA8772460162000D5268F /* PathControlViewController.swift */; };
 		DB1EA87B2460325700D5268F /* ScreencapWIndowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1EA87A2460325700D5268F /* ScreencapWIndowController.swift */; };
 		DB1EA87E246032D000D5268F /* ScreencapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1EA87D246032D000D5268F /* ScreencapViewController.swift */; };
+		DB212E4B24BE88D7006420CB /* OutlineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB212E4A24BE88D7006420CB /* OutlineViewController.swift */; };
+		DB212E4D24BFB7BE006420CB /* EditorTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB212E4C24BFB7BE006420CB /* EditorTabViewController.swift */; };
+		DB212E4F24BFC0D8006420CB /* AssetEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB212E4E24BFC0D8006420CB /* AssetEditorViewController.swift */; };
+		DB212E5924BFCDFC006420CB /* AutoSizingImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB212E5824BFCDFC006420CB /* AutoSizingImageView.swift */; };
 		DB2F46BE2464EC8C00E5FDE7 /* MacEditorTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2F46BD2464EC8C00E5FDE7 /* MacEditorTextView.swift */; };
 		DB2F46E42467D22E00E5FDE7 /* EmulatorAutomatorJSCService.xpc in Embed XPC Services */ = {isa = PBXBuildFile; fileRef = DB2F46D92467D22E00E5FDE7 /* EmulatorAutomatorJSCService.xpc */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		DB2F46E92467D28300E5FDE7 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2F46E82467D28300E5FDE7 /* main.swift */; };
@@ -38,11 +42,12 @@
 		DB2F47132468372000E5FDE7 /* JavaScriptCoreHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC8F456245EA89500CBCB04 /* JavaScriptCoreHelper.swift */; };
 		DB2F47142468374C00E5FDE7 /* JavaScriptCoreServiceHostProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2F47052468186100E5FDE7 /* JavaScriptCoreServiceHostProtocol.swift */; };
 		DB30E059245A5E2300E99B0B /* MainWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8DDD0B244F4862009D8FA0 /* MainWindowView.swift */; };
-		DB30E05E245E6C0600E99B0B /* EditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB30E05D245E6C0600E99B0B /* EditorViewController.swift */; };
+		DB30E05E245E6C0600E99B0B /* CodeEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB30E05D245E6C0600E99B0B /* CodeEditorViewController.swift */; };
 		DB34AEAE246AF22500C9D3CF /* CommonOSLogDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = DB34AEAD246AF22500C9D3CF /* CommonOSLogDynamic */; };
 		DB34AEAF246AF22500C9D3CF /* CommonOSLogDynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = DB34AEAD246AF22500C9D3CF /* CommonOSLogDynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		DB34AEB1246AF23800C9D3CF /* CommonOSLogDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = DB34AEB0246AF23800C9D3CF /* CommonOSLogDynamic */; };
 		DB34AEB2246AF23800C9D3CF /* CommonOSLogDynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = DB34AEB0246AF23800C9D3CF /* CommonOSLogDynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		DB380C6E24BE82E20042876F /* AssetOutlineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB380C6D24BE82E20042876F /* AssetOutlineViewController.swift */; };
 		DB3B934224605776004F0748 /* ScreencapUtilityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3B934124605776004F0748 /* ScreencapUtilityView.swift */; };
 		DB3B9344246058E9004F0748 /* ScreencapSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3B9343246058E9004F0748 /* ScreencapSplitViewController.swift */; };
 		DB3B9346246059BB004F0748 /* ScreencapContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3B9345246059BB004F0748 /* ScreencapContentViewController.swift */; };
@@ -70,7 +75,6 @@
 		DB80D37B2430A9290001BB54 /* LibraryOutlineTableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB80D37A2430A9290001BB54 /* LibraryOutlineTableCellView.swift */; };
 		DB80D3842430EB670001BB54 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB80D3832430EB670001BB54 /* Scene.swift */; };
 		DB80D38F243109530001BB54 /* Asset.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB80D38E243109530001BB54 /* Asset.swift */; };
-		DB80D39124310D190001BB54 /* AssetTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB80D39024310D190001BB54 /* AssetTableViewController.swift */; };
 		DB89D325241D18A6005D567A /* OutlineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB89D324241D18A6005D567A /* OutlineViewModel.swift */; };
 		DB8ACDD0243CD2B700B85171 /* EmulatorAutomatorScriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8ACDCF243CD2B700B85171 /* EmulatorAutomatorScriptTests.swift */; };
 		DB8ACDD5243CDC3C00B85171 /* LabelTableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8ACDD4243CDC3C00B85171 /* LabelTableCellView.swift */; };
@@ -97,7 +101,7 @@
 		DBC8F455245E7D8A00CBCB04 /* ContentSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC8F454245E7D8A00CBCB04 /* ContentSplitViewController.swift */; };
 		DBCB356824961461009AE5D6 /* Pods_EmulatorAutomatorCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14A318B4185DEEFD2F7FCF4E /* Pods_EmulatorAutomatorCommon.framework */; };
 		DBCFE9EA241BD92400388BB8 /* ScreencapService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCFE9E9241BD92400388BB8 /* ScreencapService.swift */; };
-		DBCFE9ED241D021900388BB8 /* ProjectOutlineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCFE9EC241D021900388BB8 /* ProjectOutlineViewController.swift */; };
+		DBCFE9ED241D021900388BB8 /* SourceOutlineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCFE9EC241D021900388BB8 /* SourceOutlineViewController.swift */; };
 		DBE1B985246061B4007544B0 /* ScreencapAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE1B984246061B4007544B0 /* ScreencapAction.swift */; };
 		DBE1B98724606BBE007544B0 /* ScreencapCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE1B98624606BBE007544B0 /* ScreencapCommand.swift */; };
 		DBE1B989246070D7007544B0 /* TakeScreencapRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE1B988246070D7007544B0 /* TakeScreencapRequest.swift */; };
@@ -105,6 +109,8 @@
 		DBE1B98D24633455007544B0 /* AppWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = DBA985A02413D256007F9C22 /* AppWindow.xib */; };
 		DBE85C20243E53ED00B3BD25 /* NoSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE85C1F243E53ED00B3BD25 /* NoSelectionView.swift */; };
 		DBE85C24243E5B1700B3BD25 /* SceneEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE85C23243E5B1700B3BD25 /* SceneEditorViewController.swift */; };
+		DBF5602424C3DC350096A526 /* CommonOSLogDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = DBF5602324C3DC350096A526 /* CommonOSLogDynamic */; };
+		DBF5602524C3DC350096A526 /* CommonOSLogDynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = DBF5602324C3DC350096A526 /* CommonOSLogDynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		DBF93AFE241A65C2000EE733 /* ScreencapContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF93AFD241A65C2000EE733 /* ScreencapContentView.swift */; };
 		DBF93B02241A6D60000EE733 /* UserDefaultsPreference in Frameworks */ = {isa = PBXBuildFile; productRef = DBF93B01241A6D60000EE733 /* UserDefaultsPreference */; };
 		DBF93B04241A6DA1000EE733 /* MainWindowPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF93B03241A6DA1000EE733 /* MainWindowPreference.swift */; };
@@ -191,6 +197,17 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DBF5602624C3DC350096A526 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				DBF5602524C3DC350096A526 /* CommonOSLogDynamic in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -212,6 +229,10 @@
 		DB1EA8772460162000D5268F /* PathControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathControlViewController.swift; sourceTree = "<group>"; };
 		DB1EA87A2460325700D5268F /* ScreencapWIndowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreencapWIndowController.swift; sourceTree = "<group>"; };
 		DB1EA87D246032D000D5268F /* ScreencapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreencapViewController.swift; sourceTree = "<group>"; };
+		DB212E4A24BE88D7006420CB /* OutlineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineViewController.swift; sourceTree = "<group>"; };
+		DB212E4C24BFB7BE006420CB /* EditorTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorTabViewController.swift; sourceTree = "<group>"; };
+		DB212E4E24BFC0D8006420CB /* AssetEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetEditorViewController.swift; sourceTree = "<group>"; };
+		DB212E5824BFCDFC006420CB /* AutoSizingImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoSizingImageView.swift; sourceTree = "<group>"; };
 		DB2F46BD2464EC8C00E5FDE7 /* MacEditorTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacEditorTextView.swift; sourceTree = "<group>"; };
 		DB2F46BF2467264000E5FDE7 /* EAJSContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EAJSContext.swift; sourceTree = "<group>"; };
 		DB2F46D92467D22E00E5FDE7 /* EmulatorAutomatorJSCService.xpc */ = {isa = PBXFileReference; explicitFileType = "wrapper.xpc-service"; includeInIndex = 0; path = EmulatorAutomatorJSCService.xpc; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -224,7 +245,8 @@
 		DB2F47052468186100E5FDE7 /* JavaScriptCoreServiceHostProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JavaScriptCoreServiceHostProtocol.swift; sourceTree = "<group>"; };
 		DB2F47082468191600E5FDE7 /* JavaScriptCoreServiceHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JavaScriptCoreServiceHost.swift; sourceTree = "<group>"; };
 		DB30E05A245A5FFD00E99B0B /* SwiftUIPreviewProvider */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SwiftUIPreviewProvider; path = ../SwiftUIPreviewProvider; sourceTree = "<group>"; };
-		DB30E05D245E6C0600E99B0B /* EditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorViewController.swift; sourceTree = "<group>"; };
+		DB30E05D245E6C0600E99B0B /* CodeEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeEditorViewController.swift; sourceTree = "<group>"; };
+		DB380C6D24BE82E20042876F /* AssetOutlineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetOutlineViewController.swift; sourceTree = "<group>"; };
 		DB3B934124605776004F0748 /* ScreencapUtilityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreencapUtilityView.swift; sourceTree = "<group>"; };
 		DB3B9343246058E9004F0748 /* ScreencapSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreencapSplitViewController.swift; sourceTree = "<group>"; };
 		DB3B9345246059BB004F0748 /* ScreencapContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreencapContentViewController.swift; sourceTree = "<group>"; };
@@ -286,7 +308,7 @@
 		DBCB356424961440009AE5D6 /* OpenCVBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = OpenCVBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBCB356B249619B9009AE5D6 /* OpenCVService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenCVService.swift; sourceTree = "<group>"; };
 		DBCFE9E9241BD92400388BB8 /* ScreencapService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreencapService.swift; sourceTree = "<group>"; };
-		DBCFE9EC241D021900388BB8 /* ProjectOutlineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectOutlineViewController.swift; sourceTree = "<group>"; };
+		DBCFE9EC241D021900388BB8 /* SourceOutlineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceOutlineViewController.swift; sourceTree = "<group>"; };
 		DBD3DA40241AB797000823CA /* CommonOSLog */ = {isa = PBXFileReference; lastKnownFileType = folder; name = CommonOSLog; path = ../CommonOSLog; sourceTree = "<group>"; };
 		DBE1B984246061B4007544B0 /* ScreencapAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreencapAction.swift; sourceTree = "<group>"; };
 		DBE1B98624606BBE007544B0 /* ScreencapCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreencapCommand.swift; sourceTree = "<group>"; };
@@ -346,6 +368,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DBF5602424C3DC350096A526 /* CommonOSLogDynamic in Frameworks */,
 				DBCB356824961461009AE5D6 /* Pods_EmulatorAutomatorCommon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -594,14 +617,16 @@
 			path = Root;
 			sourceTree = "<group>";
 		};
-		DB80D37C2430A9370001BB54 /* ProjectOutline */ = {
+		DB80D37C2430A9370001BB54 /* Outline */ = {
 			isa = PBXGroup;
 			children = (
 				DB80D3892430F9680001BB54 /* View */,
 				DB80D3882430F9620001BB54 /* ViewModel */,
-				DBCFE9EC241D021900388BB8 /* ProjectOutlineViewController.swift */,
+				DB212E4A24BE88D7006420CB /* OutlineViewController.swift */,
+				DBCFE9EC241D021900388BB8 /* SourceOutlineViewController.swift */,
+				DB380C6D24BE82E20042876F /* AssetOutlineViewController.swift */,
 			);
-			path = ProjectOutline;
+			path = Outline;
 			sourceTree = "<group>";
 		};
 		DB80D37D2430B7C60001BB54 /* TableView */ = {
@@ -760,7 +785,10 @@
 		DBC8F451245E6E7500CBCB04 /* Editor */ = {
 			isa = PBXGroup;
 			children = (
-				DB30E05D245E6C0600E99B0B /* EditorViewController.swift */,
+				DB212E4C24BFB7BE006420CB /* EditorTabViewController.swift */,
+				DB30E05D245E6C0600E99B0B /* CodeEditorViewController.swift */,
+				DB212E4E24BFC0D8006420CB /* AssetEditorViewController.swift */,
+				DB212E5824BFCDFC006420CB /* AutoSizingImageView.swift */,
 			);
 			path = Editor;
 			sourceTree = "<group>";
@@ -792,7 +820,7 @@
 			children = (
 				DB6460B4245FD60A00003B12 /* Root */,
 				DB8ACDDE243E48ED00B85171 /* Tab */,
-				DB80D37C2430A9370001BB54 /* ProjectOutline */,
+				DB80D37C2430A9370001BB54 /* Outline */,
 			);
 			path = Navigator;
 			sourceTree = "<group>";
@@ -959,12 +987,16 @@
 				DB8CAD212468657700F970FE /* Sources */,
 				DB8CAD222468657700F970FE /* Frameworks */,
 				DB8CAD232468657700F970FE /* Resources */,
+				DBF5602624C3DC350096A526 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = EmulatorAutomatorCommon;
+			packageProductDependencies = (
+				DBF5602324C3DC350096A526 /* CommonOSLogDynamic */,
+			);
 			productName = EmulatorAutomatorCommon;
 			productReference = DB8CAD252468657700F970FE /* EmulatorAutomatorCommon.framework */;
 			productType = "com.apple.product-type.framework";
@@ -1191,7 +1223,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DBE1B985246061B4007544B0 /* ScreencapAction.swift in Sources */,
-				DBCFE9ED241D021900388BB8 /* ProjectOutlineViewController.swift in Sources */,
+				DBCFE9ED241D021900388BB8 /* SourceOutlineViewController.swift in Sources */,
 				DBB2DC11245EB8C3001F999F /* Content.swift in Sources */,
 				DB2F47062468186100E5FDE7 /* JavaScriptCoreServiceHostProtocol.swift in Sources */,
 				DB2F47042467EFB000E5FDE7 /* FolderMonitorService.swift in Sources */,
@@ -1205,11 +1237,13 @@
 				DBF93B04241A6DA1000EE733 /* MainWindowPreference.swift in Sources */,
 				DB3B9346246059BB004F0748 /* ScreencapContentViewController.swift in Sources */,
 				DB1A191224139C8200BB178D /* AppSceneManager.swift in Sources */,
+				DB212E4D24BFB7BE006420CB /* EditorTabViewController.swift in Sources */,
 				DB1AFA25243F66C50044EB8B /* Document.swift in Sources */,
 				DB7C442D241D0B87006F33C2 /* ContentViewController.swift in Sources */,
 				DB7C442A241D0B55006F33C2 /* NavigatorViewController.swift in Sources */,
 				DB8ACDD8243CDFB900B85171 /* FileUtilityViewController.swift in Sources */,
 				DB3B9349246059D0004F0748 /* ScreencapUtilityViewController.swift in Sources */,
+				DB212E4F24BFC0D8006420CB /* AssetEditorViewController.swift in Sources */,
 				DB3B934224605776004F0748 /* ScreencapUtilityView.swift in Sources */,
 				DB6A459E245A54FF0056EA37 /* OutlineView.swift in Sources */,
 				DB8ACDD5243CDC3C00B85171 /* LabelTableCellView.swift in Sources */,
@@ -1220,7 +1254,7 @@
 				DB30E059245A5E2300E99B0B /* MainWindowView.swift in Sources */,
 				DBC8F453245E7D6400CBCB04 /* DebugAreaViewController.swift in Sources */,
 				DB9FF44A24154D980048E676 /* MainSplitViewController.swift in Sources */,
-				DB30E05E245E6C0600E99B0B /* EditorViewController.swift in Sources */,
+				DB30E05E245E6C0600E99B0B /* CodeEditorViewController.swift in Sources */,
 				DB1EA87E246032D000D5268F /* ScreencapViewController.swift in Sources */,
 				DB1EA8782460162000D5268F /* PathControlViewController.swift in Sources */,
 				DBE1B989246070D7007544B0 /* TakeScreencapRequest.swift in Sources */,
@@ -1230,14 +1264,16 @@
 				DB80D3842430EB670001BB54 /* Scene.swift in Sources */,
 				DB2F47012467EF9600E5FDE7 /* SceneTableViewController.swift in Sources */,
 				DB80D37B2430A9290001BB54 /* LibraryOutlineTableCellView.swift in Sources */,
-				DB80D39124310D190001BB54 /* AssetTableViewController.swift in Sources */,
+				DB380C6E24BE82E20042876F /* AssetOutlineViewController.swift in Sources */,
 				DB2F46BE2464EC8C00E5FDE7 /* MacEditorTextView.swift in Sources */,
 				DB8ACDDD243E307200B85171 /* NavigatorTabViewController.swift in Sources */,
+				DB212E4B24BE88D7006420CB /* OutlineViewController.swift in Sources */,
 				DBA9858C2413A685007F9C22 /* AppScene.swift in Sources */,
 				DB46D535241293E0009628A3 /* AppDelegate.swift in Sources */,
 				DBCFE9EA241BD92400388BB8 /* ScreencapService.swift in Sources */,
 				DBE85C24243E5B1700B3BD25 /* SceneEditorViewController.swift in Sources */,
 				DB1EA87B2460325700D5268F /* ScreencapWIndowController.swift in Sources */,
+				DB212E5924BFCDFC006420CB /* AutoSizingImageView.swift in Sources */,
 				DB3B9344246058E9004F0748 /* ScreencapSplitViewController.swift in Sources */,
 				DB80D38F243109530001BB54 /* Asset.swift in Sources */,
 				DB3B935124605C6C004F0748 /* ScreencapState.swift in Sources */,
@@ -1793,6 +1829,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = DBC8F44E245E6E5200CBCB04 /* XCRemoteSwiftPackageReference "Highlightr" */;
 			productName = Highlightr;
+		};
+		DBF5602324C3DC350096A526 /* CommonOSLogDynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CommonOSLogDynamic;
 		};
 		DBF93B01241A6D60000EE733 /* UserDefaultsPreference */ = {
 			isa = XCSwiftPackageProductDependency;

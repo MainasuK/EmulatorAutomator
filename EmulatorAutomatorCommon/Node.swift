@@ -59,6 +59,7 @@ extension Node {
                         throw DecodingError.dataCorruptedError(forKey: CodingKeys.image, in: container, debugDescription: "Image Data Corrupted")
                     }
                     self = .image(image)
+                    return
                 default:
                     continue
                 }

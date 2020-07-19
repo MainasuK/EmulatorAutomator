@@ -13,7 +13,7 @@ import CocoaPreviewProvider
 import Highlightr
 import CommonOSLog
 
-final class EditorViewControllerViewModel {
+final class CodeEditorViewControllerViewModel {
     
     var disposeBag = Set<AnyCancellable>()
 
@@ -42,10 +42,10 @@ final class EditorViewControllerViewModel {
 
 }
 
-final class EditorViewController: NSViewController {
+final class CodeEditorViewController: NSViewController {
     
     var disposeBag = Set<AnyCancellable>()
-    let viewModel = EditorViewControllerViewModel()
+    let viewModel = CodeEditorViewControllerViewModel()
     
     weak var document: Document? {
         return representedObject as? Document
@@ -108,7 +108,7 @@ final class EditorViewController: NSViewController {
     
 }
 
-extension EditorViewController {
+extension CodeEditorViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -150,7 +150,7 @@ extension EditorViewController {
     
 }
 
-extension EditorViewController {
+extension CodeEditorViewController {
     
     @objc func shiftLeft(_ sender: NSMenuItem) {
         let selectedRange = editorTextView.selectedRange()
@@ -195,7 +195,7 @@ extension EditorViewController {
 }
 
 // MARK: - NSTextViewDelegate
-extension EditorViewController: NSTextViewDelegate {
+extension CodeEditorViewController: NSTextViewDelegate {
     
     func textView(_ textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
         if commandSelector == #selector(insertTab(_:)) {
@@ -255,7 +255,7 @@ struct EditorViewController_Previews: PreviewProvider {
             export $initHighlight;
             """
             
-            let viewController = EditorViewController()
+            let viewController = CodeEditorViewController()
             viewController.textStorage.setAttributedString(NSAttributedString(string: sampleCode))
             return viewController
         }

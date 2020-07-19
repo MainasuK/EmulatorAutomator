@@ -15,7 +15,7 @@ final class OutlineViewModel: NSObject {
     let objectWillChange = PassthroughSubject<Void, Never>()
     
     // input
-    let content = PassthroughSubject<Document.Content, Never>()
+    let content = CurrentValueSubject<Document.Content?, Never>(nil)
     var sourcesEntry = Node(object: .entry(.sources), children: [])
     var assetsEntry = Node(object: .entry(.assets), children: [])
     let currentSelectionTreeNode = CurrentValueSubject<NSTreeNode?, Never>(nil)
@@ -23,29 +23,14 @@ final class OutlineViewModel: NSObject {
     // output
     let currentSelectionContentNode = CurrentValueSubject<Document.Content.Node?, Never>(nil)
     
-    @objc private(set) lazy var tree: [Node] = {
-        let projectEntry = Node(object: .entry(.project), children: [sourcesEntry, assetsEntry])
+    @objc lazy var tree: [Node] = {
+        let projectEntry = Node(object: .entry(.project), children: [])
         return [projectEntry]
     }()
     
     override init() {
         super.init()
-        
-        content
-            .sink(receiveValue: { [weak self] content in
-                guard let `self` = self else { return }
-                self.willChangeValue(for: \.tree)
-                
-                let sources = OutlineViewModel.travel(contentNodes: content.sources)
-                self.sourcesEntry.children = sources
-                
-                let assets = OutlineViewModel.travel(contentNodes: content.assets)
-                self.assetsEntry.children = assets
-                
-                self.didChangeValue(for: \.tree)
-            })
-            .store(in: &disposeBag)
-        
+    
         currentSelectionTreeNode
             .map { treeNode -> Document.Content.Node? in
                 guard let node = treeNode?.representedObject as? OutlineViewModel.Node else {

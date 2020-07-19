@@ -8,6 +8,7 @@
 
 import Foundation
 import OpenCVBridge
+import CommonOSLog
 
 public final class OpenCVService {
     public init() { }
@@ -43,7 +44,7 @@ extension OpenCVService {
         }
         
         guard goodMatches.count >= 4 else {
-            let result = FeatureMatchingResult(goodMatchCount: goodMatches.count, determinant: 0, rectangle: nil)
+            let result = FeatureMatchingResult(goodMatchCount: goodMatches.count, determinant: 0, score: 0, rectangle: nil)
             return result
         }
         
@@ -58,6 +59,8 @@ extension OpenCVService {
                                             dst: scenePoints.map { NSValue(point: $0) },
                                             method: .RANSAC)
         let determinant = H.empty() ? 0.0 : CVBCore.determinant(H)
+        
+        let score: CGFloat = CGFloat(goodMatches.count) / CGFloat(objectKeypoints.count)
         
         let objectRect: [CGPoint] = [
             CGPoint.zero,
@@ -91,8 +94,10 @@ extension OpenCVService {
         let previewCGImage = previewImage.imageRef().takeRetainedValue()
         let result = FeatureMatchingResult(goodMatchCount: goodMatches.count,
                                            determinant: determinant,
+                                           score: score,
                                            rectangle: rectangle,
                                            previewImage: NSImage(cgImage: previewCGImage, size: .zero))
+        os_log(.info, log: .debug, "%{public}s[%{public}ld], %{public}s: %s", ((#file as NSString).lastPathComponent), #line, #function, String(describing: result))
         return result
     }
         
@@ -102,7 +107,7 @@ extension OpenCVService {
     public struct FLANNOptions {
         public var enabled = true
         public var minHessian = 400.0
-        public var ratioThresh = 0.8       // Lowe's ratio 0.4 ~ 0.6
+        public var ratioThresh = 0.6       // Lowe's ratio 0.4 ~ 0.6
         
         public init(enabled: Bool = true, minHessian: Double = 400.0, ratioThresh: Double = 0.8) {
             self.enabled = enabled
@@ -115,16 +120,18 @@ extension OpenCVService {
         public let id = UUID()
         public let goodMatchCount: Int
         public let determinant: Double
+        public let score: CGFloat
         public let rectangle: Rectangle?
         public let previewImage: NSImage?
         
         public init() {
-            self.init(goodMatchCount: 0, determinant: 0)
+            self.init(goodMatchCount: 0, determinant: 0, score: 0)
         }
         
-        public init(goodMatchCount: Int, determinant: Double, rectangle: Rectangle? = nil, previewImage: NSImage? = nil) {
+        public init(goodMatchCount: Int, determinant: Double, score: CGFloat, rectangle: Rectangle? = nil, previewImage: NSImage? = nil) {
             self.goodMatchCount = goodMatchCount
             self.determinant = determinant
+            self.score = score
             self.rectangle = rectangle
             self.previewImage = previewImage
         }

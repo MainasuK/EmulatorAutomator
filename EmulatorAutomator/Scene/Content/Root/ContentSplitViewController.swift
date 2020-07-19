@@ -22,11 +22,11 @@ final class ContentSplitViewController: NSSplitViewController {
     
     private var observers = Set<NSKeyValueObservation>()
     
-    let editorViewController = EditorViewController()
+    let editorTabViewController = EditorTabViewController()
     let debugAreaViewController = DebugAreaViewController()
     
-    private(set) lazy var editorSplitViewItem: NSSplitViewItem = {
-        let item = NSSplitViewItem(viewController: editorViewController)
+    private(set) lazy var editorTabSplitViewItem: NSSplitViewItem = {
+        let item = NSSplitViewItem(viewController: editorTabViewController)
         item.minimumThickness = 100
         item.holdingPriority = .defaultLow - 1
         item.collapseBehavior = .useConstraints
@@ -48,7 +48,7 @@ extension ContentSplitViewController {
         super.viewDidLoad()
         
         splitView.isVertical = false
-        splitViewItems = [editorSplitViewItem, debugAreaSplitViewItem]
+        splitViewItems = [editorTabSplitViewItem, debugAreaSplitViewItem]
         splitView.delegate = self
         
         // bind debug area item to preferences

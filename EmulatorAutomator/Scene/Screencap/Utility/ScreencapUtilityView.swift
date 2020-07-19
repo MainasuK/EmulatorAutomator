@@ -136,6 +136,11 @@ extension ScreencapUtilityView {
                     .frame(maxWidth: .infinity, maxHeight: 200)
                     .background(Color.gray)
                 HStack {
+                    Text(String(format: "Good: %d", store.screencapState.utility.featureMatchingResult.goodMatchCount))
+                    Text(String(format: "Determinant: %.2lf", store.screencapState.utility.featureMatchingResult.determinant))
+                    Text(String(format: "Score: %.2lf%", store.screencapState.utility.featureMatchingResult.score * 100))
+                }
+                HStack {
                     Toggle(isOn: $store.screencapState.utility.isPreviewPinned) {
                         Text("Pin")
                     }
