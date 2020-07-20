@@ -171,6 +171,9 @@ extension ScreencapUtilityView {
     
     private func generateCode(for type: ScreencapState.Utility.ScriptGenerationType) -> String {
         switch type {
+        case .tapInSelection:
+            let rect = store.screencapState.content.selectionFrame.standardized
+            return "emulator.tap(\(floor(rect.origin.x)), \(floor(rect.origin.x)), \(floor(rect.width)), \(floor(rect.height)));"
         case .tapInTheCenterOfSelection:
             let rect = store.screencapState.content.selectionFrame.standardized
             let center = CGPoint(x: floor(rect.midX), y: floor(rect.midY))

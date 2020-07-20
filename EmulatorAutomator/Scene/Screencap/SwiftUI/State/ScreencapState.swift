@@ -34,13 +34,14 @@ extension ScreencapState {
 extension ScreencapState {
     struct Utility {
         enum ScriptGenerationType: CaseIterable {
+            case tapInSelection
             case tapInTheCenterOfSelection
             
             case listPackages
             case openPackage
         }
         
-        var scriptGenerationType: ScriptGenerationType = .tapInTheCenterOfSelection
+        var scriptGenerationType: ScriptGenerationType = .tapInSelection
         var flannMatchingImage = NSImage()
         
         var isPreviewPinned = false {
@@ -57,6 +58,8 @@ extension ScreencapState {
 extension ScreencapState.Utility.ScriptGenerationType {
     var text: String {
         switch self {
+        case .tapInSelection:
+            return "Tap in selection"
         case .tapInTheCenterOfSelection:
             return "Tap in the center of selection"
         case .listPackages:

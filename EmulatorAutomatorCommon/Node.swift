@@ -99,4 +99,29 @@ extension Node {
         self.assets = assets
     }
     
+    public func find(asset name: String) -> Node? {
+        find(node: name, in: assets)
+    }
+    
+}
+
+extension AutomatorScriptResource {
+    
+    private func find(node name: String, in nodes: [Node]) -> Node? {
+        for node in nodes {
+            switch node.content {
+            case .directory:
+                return find(node: name, in: node.children)
+            default:
+                if node.name == name {
+                    return node
+                } else {
+                    continue
+                }
+            }
+        }
+        
+        return nil
+    }
+    
 }

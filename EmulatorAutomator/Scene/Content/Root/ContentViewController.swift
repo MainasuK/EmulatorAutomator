@@ -165,9 +165,6 @@ extension ContentViewController {
                 guard let `self` = self else { return }
                 guard let currentContentNode = self.viewModel.currentSelectionContentNode.value else { return }
                 
-                // force restart server
-                Adb.killServer()
-                
                 // run script
                 let nodeData = try! JSONEncoder().encode(currentContentNode)
                 let resource = AutomatorScriptResource(script: script, sources: document.content.sources, assets: document.content.assets)
