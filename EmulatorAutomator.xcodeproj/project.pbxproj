@@ -65,6 +65,7 @@
 		DB5062E7246ED4BC0069E928 /* CommonOSLogDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = DB5062E6246ED4BC0069E928 /* CommonOSLogDynamic */; };
 		DB5062E8246ED4BC0069E928 /* CommonOSLogDynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = DB5062E6246ED4BC0069E928 /* CommonOSLogDynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		DB5062EB246ED5020069E928 /* CocoaSceneManager in Frameworks */ = {isa = PBXBuildFile; productRef = DB5062EA246ED5020069E928 /* CocoaSceneManager */; };
+		DB538FA224F6C1D2001C902E /* Base64.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB538FA124F6C1D2001C902E /* Base64.swift */; };
 		DB6081D024B4DAFF00374B9D /* SaveAssetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6081CF24B4DAFF00374B9D /* SaveAssetViewController.swift */; };
 		DB6081D324B62F5200374B9D /* MessagePack in Frameworks */ = {isa = PBXBuildFile; productRef = DB6081D224B62F5200374B9D /* MessagePack */; };
 		DB6A459E245A54FF0056EA37 /* OutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6A459D245A54FF0056EA37 /* OutlineView.swift */; };
@@ -263,6 +264,7 @@
 		DB46D546241293E2009628A3 /* EmulatorAutomatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EmulatorAutomatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB46D54A241293E2009628A3 /* EmulatorAutomatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmulatorAutomatorTests.swift; sourceTree = "<group>"; };
 		DB46D54C241293E2009628A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DB538FA124F6C1D2001C902E /* Base64.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base64.swift; sourceTree = "<group>"; };
 		DB6081CF24B4DAFF00374B9D /* SaveAssetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveAssetViewController.swift; sourceTree = "<group>"; };
 		DB6A459D245A54FF0056EA37 /* OutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineView.swift; sourceTree = "<group>"; };
 		DB7C4429241D0B55006F33C2 /* NavigatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigatorViewController.swift; sourceTree = "<group>"; };
@@ -799,6 +801,7 @@
 				DBC8F456245EA89500CBCB04 /* JavaScriptCoreHelper.swift */,
 				DB2F46BF2467264000E5FDE7 /* EAJSContext.swift */,
 				DB8ACDCD243CD0CE00B85171 /* Emulator.swift */,
+				DB538FA124F6C1D2001C902E /* Base64.swift */,
 			);
 			path = JavaScriptCore;
 			sourceTree = "<group>";
@@ -1211,6 +1214,7 @@
 				DB2F46ED2467D2CD00E5FDE7 /* JavaScriptCoreServiceProtocol.swift in Sources */,
 				DB2F47142468374C00E5FDE7 /* JavaScriptCoreServiceHostProtocol.swift in Sources */,
 				DB2F47122468371600E5FDE7 /* EAJSContext.swift in Sources */,
+				DB538FA224F6C1D2001C902E /* Base64.swift in Sources */,
 				DB2F46EF2467D3AA00E5FDE7 /* JavaScriptCoreServiceXPCListenerDelegate.swift in Sources */,
 				DB2F46E92467D28300E5FDE7 /* main.swift in Sources */,
 				DB2F47132468372000E5FDE7 /* JavaScriptCoreHelper.swift in Sources */,

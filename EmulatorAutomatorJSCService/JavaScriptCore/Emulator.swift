@@ -20,7 +20,8 @@ import EmulatorAutomatorCommon
     func snapshot()
     func tap(_ x: Double, _ y: Double)
     func tap(_ x: Double, _ y: Double, width: Double, height: Double)
-    
+    func text(_ text: String)
+
     // func download(handler: JSValue)
     func match(_ name: String) -> Bool
     
@@ -145,6 +146,11 @@ extension Emulator {
                             y: Double.random(in: y..<(y+height)))
         _ = Adb.Shell.Input.tap(point: point)
         os_log("%{public}s[%{public}ld], %{public}s: tap %{public}s", ((#file as NSString).lastPathComponent), #line, #function, point.debugDescription)
+    }
+    
+    func text(_ text: String) {
+        _ = Adb.Shell.Input.text(text: text)
+        os_log(.info, log: .debug, "%{public}s[%{public}ld], %{public}s: text %s", ((#file as NSString).lastPathComponent), #line, #function, text)
     }
 
     

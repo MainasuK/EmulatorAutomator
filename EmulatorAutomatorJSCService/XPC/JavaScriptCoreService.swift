@@ -136,6 +136,7 @@ extension JavaScriptCoreService {
                     
                     Emulator.resources = resource
                     Emulator.configure(context: context)
+                    Base64.configure(context: context)
                     
                     var value: JSValue
                     if let script = resource.script {
