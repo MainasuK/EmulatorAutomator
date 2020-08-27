@@ -34,7 +34,11 @@ final class PathControlViewModel {
                 guard let node = treeNode.descendant(at: indexPath)?.representedObject as? OutlineViewModel.Node else { return false }
                 switch node.object {
                 case .contentNode(let contentNode):
-                    return contentNode.isFile
+                    // isFile
+                    switch contentNode.content {
+                    case .directory:    return false
+                    default:            return true
+                    }
                 case .entry(_):
                     return false
                 }
@@ -65,14 +69,15 @@ final class PathControlViewModel {
                     case .entry:
                         item.image = NSImage(named: NSImage.folderName)
                     case .contentNode(let contentNode):
-                        if contentNode.isFile {
+                        switch contentNode.content {
+                        case .directory:
+                            item.image = NSImage(named: NSImage.folderName)
+                        default:
                             if let url = URL(string: contentNode.name) {
                                 item.image = NSWorkspace.shared.icon(forFileType: url.pathExtension)
                             } else {
                                 item.image = NSWorkspace.shared.icon(forFileType: "txt")
                             }
-                        } else {
-                            item.image = NSImage(named: NSImage.folderName)
                         }
                     }
                     return item

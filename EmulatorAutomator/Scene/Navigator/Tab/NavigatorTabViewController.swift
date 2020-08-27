@@ -20,9 +20,9 @@ final class NavigatorTabViewController: NSTabViewController {
         }
     }
     
-    private let projectOutlineViewController = ProjectOutlineViewController()
-    private let assetTableViewController = AssetTableViewController()
-    private let operatorTableViewController = AssetTableViewController()
+    private let sourceOutlineViewController = SourceOutlineViewController()
+    private let assetOutlineViewController = AssetOutlineViewController()
+    private let operatorTableViewController = AssetOutlineViewController()
     
     deinit {
         os_log(.info, log: .debug, "%{public}s[%{public}ld], %{public}s", ((#file as NSString).lastPathComponent), #line, #function)
@@ -33,7 +33,7 @@ final class NavigatorTabViewController: NSTabViewController {
 extension NavigatorTabViewController {
     
     enum NotificationName {
-        static let didSelectViewController = Notification.Name("didSelectViewController")
+        static let didSelectViewController = Notification.Name("NavigatorTabViewController.didSelectViewController")
     }
     
 }
@@ -45,8 +45,8 @@ extension NavigatorTabViewController {
 
         tabStyle = .unspecified
         
-        addChild(projectOutlineViewController)
-        addChild(assetTableViewController)
+        addChild(sourceOutlineViewController)
+        addChild(assetOutlineViewController)
         addChild(operatorTableViewController)
     }
     

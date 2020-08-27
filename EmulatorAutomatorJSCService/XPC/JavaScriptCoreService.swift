@@ -17,6 +17,7 @@ final class JavaScriptCoreService: NSObject, JavaScriptCoreServiceProtocol {
 
     var disposeBag = Set<AnyCancellable>()
     var scriptLoggingSubscription: AnyCancellable?
+    var scriptLoggingSubscription2: AnyCancellable?
     var scriptErrorSubscription: AnyCancellable?
 
     let xpcID = UUID().uuidString
@@ -98,6 +99,14 @@ extension JavaScriptCoreService {
                         os_log(.info, log: .debug, "%{public}s[%{public}ld], %{public}s: send log to host: %s", ((#file as NSString).lastPathComponent), #line, #function, value.debugDescription)
                         host.log(value.debugDescription, id: id)
                     }
+                self.scriptLoggingSubscription2 = NotificationCenter.default.publisher(for: Emulator.didReceiveLog)
+                    .sink { notification in
+                        guard let value = notification.object as? String else { return }
+                        
+                        // send log callback to host
+                        os_log(.info, log: .debug, "%{public}s[%{public}ld], %{public}s: send log to host: %s", ((#file as NSString).lastPathComponent), #line, #function, value)
+                        host.log(value, id: id)
+                    }
                 // setup log notification listener
                 self.scriptErrorSubscription = NotificationCenter.default.publisher(for: JavaScriptCoreHelper.didReceiveError)
                     .sink { notification in
@@ -106,7 +115,7 @@ extension JavaScriptCoreService {
                         // send log callback to host
                         os_log(.info, log: .debug, "%{public}s[%{public}ld], %{public}s: send error log to host: %s", ((#file as NSString).lastPathComponent), #line, #function, value.debugDescription)
                         host.log(value.debugDescription, id: id)
-                }
+                    }
             })
         
         let node = try! JSONDecoder().decode(Node.self, from: node)
@@ -125,7 +134,9 @@ extension JavaScriptCoreService {
                     let helper = JavaScriptCoreHelper(id: id, host: host, resource: resource)
                     helper.config(context: context) // long live helper until script exit
                     
+                    Emulator.resources = resource
                     Emulator.configure(context: context)
+                    Base64.configure(context: context)
                     
                     var value: JSValue
                     if let script = resource.script {

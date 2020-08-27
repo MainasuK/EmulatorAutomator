@@ -209,7 +209,8 @@ extension FileUtilityViewController: NSTextFieldDelegate {
                 return
             }
             
-            document?.updateSources(for: contentNode, name: sender.stringValue)
+            contentNode.name = sender.stringValue
+            document?.update(node: contentNode)
         }
     }
     

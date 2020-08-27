@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16096"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -150,6 +150,17 @@
                                         <menuItem title="Select All" keyEquivalent="a" id="Ruw-6m-B2m">
                                             <connections>
                                                 <action selector="selectAll:" target="Ady-hI-5gd" id="VNm-Mi-diN"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="DT5-Ep-pFK"/>
+                                        <menuItem title="Shift Left" keyEquivalent="[" id="6DJ-SY-SFJ">
+                                            <connections>
+                                                <action selector="shiftLeft:" target="Ady-hI-5gd" id="3kZ-0J-uvq"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Shift Right" keyEquivalent="]" id="85M-ZP-byY">
+                                            <connections>
+                                                <action selector="shiftRight:" target="Ady-hI-5gd" id="kjO-iI-3Nd"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="uyl-h8-XO2"/>

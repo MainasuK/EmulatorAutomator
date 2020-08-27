@@ -8,7 +8,9 @@
 
 import Cocoa
 import SwiftUI
+import Combine
 import AVFoundation
+import EmulatorAutomatorCommon
 
 struct SelectionArea: Shape {
     
@@ -72,9 +74,82 @@ struct SelectionArea: Shape {
 
 }
 
+final class ScreencapContentViewModel: ObservableObject {
+    
+    var disposeBag = Set<AnyCancellable>()
+    
+    // input
+    // screencap from ADB
+    let screencap = CurrentValueSubject<NSImage, Never>(NSImage())
+    var screencapSubscription: AnyCancellable?
+    
+    let selectionFrame = CurrentValueSubject<CGRect, Never>(.zero)
+    var selectionFrameSubscription: AnyCancellable?
+    
+    let isPreviewPinned = CurrentValueSubject<Bool, Never>(false)
+    var isPreviewPinnedSubscription: AnyCancellable?
+    
+    // output
+    // image of selection region from the screencap
+    let targetImage = CurrentValueSubject<NSImage, Never>(NSImage())
+    var targetImageSubscription: AnyCancellable?
+    
+    let featureMatchingResult = CurrentValueSubject<OpenCVService.FeatureMatchingResult, Never>(.init())
+    var featureMatchingResultSubscription: AnyCancellable?
+    
+    init() {
+        let croppedImage = CurrentValueSubject<NSImage, Never>(NSImage())
+        
+        Publishers.CombineLatest(screencap.eraseToAnyPublisher(), selectionFrame.eraseToAnyPublisher())
+            .map { screencap, selectionFrame in
+                guard screencap.isValid, screencap.size != .zero, selectionFrame != .zero else {
+                    return NSImage()
+                }
+
+                let cropRect = selectionFrame.standardized.intersection(CGRect(x: 0, y: 0, width: screencap.size.width, height: screencap.size.height))
+                
+                guard let cgImage = screencap.cgImage(forProposedRect: nil, context: nil, hints: nil),
+                let croppedImage = cgImage.cropping(to: cropRect) else {
+                    return NSImage()
+                }
+                
+                return NSImage(cgImage: croppedImage, size: cropRect.size)
+            }
+            .assign(to: \.value, on: croppedImage)
+            .store(in: &disposeBag)
+        
+        Publishers.CombineLatest(croppedImage.eraseToAnyPublisher(), isPreviewPinned.eraseToAnyPublisher())
+            .filter { !$1 }
+            .map { croppedImage, _ in croppedImage }
+            .assign(to: \.value, on: targetImage)
+            .store(in: &disposeBag)
+                
+        Publishers.CombineLatest(screencap.eraseToAnyPublisher(), targetImage.eraseToAnyPublisher())
+            .handleEvents(receiveOutput: { _ in
+                // reset
+                self.featureMatchingResult.value = .init()
+            })
+            .map { screencap, target -> AnyPublisher<OpenCVService.FeatureMatchingResult, Never> in
+                Future<OpenCVService.FeatureMatchingResult, Never> { promise in
+                    DispatchQueue.global().async {
+                        let result = OpenCVService().match(image: screencap, target: target)
+                        promise(.success(result))
+                    }
+                }.eraseToAnyPublisher()
+            }
+            .eraseToAnyPublisher()
+            .switchToLatest()
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.value, on: featureMatchingResult)
+            .store(in: &disposeBag)
+    }
+    
+}
+
 struct ScreencapContentView: View {
     
     @EnvironmentObject var store: ScreencapStore
+    @ObservedObject var viewModel = ScreencapContentViewModel()
     
     @GestureState var dragStartLocation: CGPoint = .zero
     @GestureState var dragTransition: CGSize = .zero
@@ -89,7 +164,7 @@ struct ScreencapContentView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.blue)
+                // .background(Color.blue)
                 .overlay(GeometryReader { geometry -> SelectionArea in
                     let viewFrame = geometry.frame(in: .global)
                     let imageFrame = AVMakeRect(aspectRatio: self.store.screencapState.content.screencap.size, insideRect: viewFrame)   // save Runloop
@@ -120,14 +195,34 @@ struct ScreencapContentView: View {
                 .onEnded { value in
                     let dragRectInView = CGRect(origin: value.startLocation, size: value.translation).standardized
                     let rect = SelectionArea.convertRectFromViewToImage(rect: dragRectInView, viewFrame: self.viewFrame, imageFrame: self.imageFrame, imageSize: self.store.screencapState.content.screencap.size)
-                    self.store.screencapState.content.selectionFrame = CGRect(x: floor(rect.origin.x), y: floor(rect.origin.y), width: floor(rect.width), height: floor(rect.height))
+                    let selectionFrame = CGRect(x: floor(rect.origin.x), y: floor(rect.origin.y), width: floor(rect.width), height: floor(rect.height))
+                    self.store.dispatch(.makeSelectionOfScreencap(rect: selectionFrame))
                 }
         )
         .gesture(TapGesture(count: 1)
             .onEnded { _ in
-                self.store.screencapState.content.selectionFrame = .zero
+                self.store.dispatch(.resetSelectionOfScreencap)
             }
         )
+        .onAppear {
+            // subscribe store
+            self.viewModel.screencapSubscription = self.store.screencapState.content.screencapPublisher
+                .assign(to: \.value, on: self.viewModel.screencap)
+            self.viewModel.selectionFrameSubscription = self.store.screencapState.content.selectionFramePublisher
+                .assign(to: \.value, on: self.viewModel.selectionFrame)
+            self.viewModel.isPreviewPinnedSubscription = self.store.screencapState.utility.isPreviewPinnedPublisher
+                .assign(to: \.value, on: self.viewModel.isPreviewPinned)
+            
+            // use dispatcher update source
+            self.viewModel.targetImageSubscription = self.viewModel.targetImage
+                .sink(receiveValue: { image in
+                    self.store.dispatch(.setScreenshotCroppedImage(image: image))
+                })
+            self.viewModel.featureMatchingResultSubscription = self.viewModel.featureMatchingResult
+                .sink(receiveValue: { result in
+                    self.store.dispatch(.setPreviewResult(result: result))
+                })
+        }
     }   // end body
     
 }

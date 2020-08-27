@@ -2,6 +2,33 @@
   "object": {
     "pins": [
       {
+        "package": "AdbAutomator",
+        "repositoryURL": "https://github.com/MainasuK/AdbAutomator",
+        "state": {
+          "branch": null,
+          "revision": "82054930e8cd2ac228337d8a83ff4fce61feb182",
+          "version": "0.2.2"
+        }
+      },
+      {
+        "package": "CocoaSceneManager",
+        "repositoryURL": "https://github.com/MainasuK/CocoaSceneManager.git",
+        "state": {
+          "branch": null,
+          "revision": "a41dac99c81989df2bcc2d3e8d6af9a6bde33f82",
+          "version": "0.1.0"
+        }
+      },
+      {
+        "package": "CommonOSLog",
+        "repositoryURL": "https://github.com/MainasuK/CommonOSLog.git",
+        "state": {
+          "branch": null,
+          "revision": "c121624a30698e9886efe38aebb36ff51c01b6c2",
+          "version": "0.1.1"
+        }
+      },
+      {
         "package": "Gzip",
         "repositoryURL": "https://github.com/1024jp/GzipSwift.git",
         "state": {
@@ -26,6 +53,33 @@
           "branch": null,
           "revision": "c2ecdec085f78cdbc0323ec4d44d297e5e6a0379",
           "version": "3.0.0"
+        }
+      },
+      {
+        "package": "MessagePack",
+        "repositoryURL": "https://github.com/Flight-School/MessagePack",
+        "state": {
+          "branch": null,
+          "revision": "688d9c83e4e87070835fd45016e869e4e03e7319",
+          "version": "1.2.3"
+        }
+      },
+      {
+        "package": "SwiftUIPreviewProvider",
+        "repositoryURL": "https://github.com/MainasuK/SwiftUIPreviewProvider.git",
+        "state": {
+          "branch": null,
+          "revision": "216840d95488f52ca02d8ef64892695167fd40be",
+          "version": "0.1.0"
+        }
+      },
+      {
+        "package": "UserDefaultsPreference",
+        "repositoryURL": "https://github.com/MainasuK/UserDefaultsPreference.git",
+        "state": {
+          "branch": null,
+          "revision": "66abe6c19b3506632bdab7f833e12afdf87f0459",
+          "version": "0.1.0"
         }
       }
     ]

@@ -10,6 +10,7 @@ import Cocoa
 import Combine
 import JavaScriptCore
 import CommonOSLog
+import AdbAutomator
 import EmulatorAutomatorCommon
 
 final class ContentViewControllerViewModel {
@@ -105,7 +106,8 @@ extension ContentViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(ContentViewController.run(_:)), name: MainWindowController.NotificationName.run, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ContentViewController.stop(_:)), name: MainWindowController.NotificationName.stop, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(ContentViewController.outlineViewSelectionChange(_:)), name: ProjectOutlineViewController.NotificationName.selectionChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ContentViewController.outlineViewSelectionChange(_:)), name: SourceOutlineViewController.NotificationName.selectionChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ContentViewController.outlineViewSelectionChange(_:)), name: AssetOutlineViewController.NotificationName.selectionChanged, object: nil)
         
         // bind to path control view model
         viewModel.currentSelectionIndexPathAndTreeNode
@@ -114,8 +116,16 @@ extension ContentViewController {
         
         // bind to editor view model
         viewModel.currentSelectionContentNode
-            .assign(to: \.value, on: splitViewController.editorViewController.viewModel.currentSelectionContentNode)
-            .store(in: &splitViewController.editorViewController.disposeBag)
+            .assign(to: \.value, on: splitViewController.editorTabViewController.viewModel.currentSelectionContentNode)
+            .store(in: &splitViewController.editorTabViewController.viewModel.disposeBag)
+        
+        viewModel.currentSelectionContentNode
+            .assign(to: \.value, on: splitViewController.editorTabViewController.assetEditorViewControllerViewController.viewModel.currentSelectionContentNode)
+            .store(in: &splitViewController.editorTabViewController.sourceEditorViewControllerViewController.disposeBag)
+        
+        viewModel.currentSelectionContentNode
+            .assign(to: \.value, on: splitViewController.editorTabViewController.sourceEditorViewControllerViewController.viewModel.currentSelectionContentNode)
+            .store(in: &splitViewController.editorTabViewController.sourceEditorViewControllerViewController.disposeBag)
     }
     
 }
@@ -127,7 +137,7 @@ extension ContentViewController {
             return
         }
         let script: String? = {
-            let editorTextView = self.splitViewController.editorViewController.editorTextView
+            let editorTextView = self.splitViewController.editorTabViewController.sourceEditorViewControllerViewController.editorTextView
             let string = editorTextView.attributedString().string
             
             // if has text selected. only execute the selection parts
@@ -154,6 +164,8 @@ extension ContentViewController {
             }, receiveValue: { [weak self] xpc in
                 guard let `self` = self else { return }
                 guard let currentContentNode = self.viewModel.currentSelectionContentNode.value else { return }
+                
+                // run script
                 let nodeData = try! JSONEncoder().encode(currentContentNode)
                 let resource = AutomatorScriptResource(script: script, sources: document.content.sources, assets: document.content.assets)
                 let resourceData = try! JSONEncoder().encode(resource)
@@ -168,7 +180,7 @@ extension ContentViewController {
     }
     
     @objc private func outlineViewSelectionChange(_ notification: Notification) {
-        guard let outlineViewController = notification.object as? ProjectOutlineViewController,
+        guard let outlineViewController = notification.object as? OutlineViewController,
         let remoteDocument = outlineViewController.representedObject as? Document,
         let document = representedObject as? Document,
         remoteDocument === document else {

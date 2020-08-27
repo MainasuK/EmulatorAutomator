@@ -11,20 +11,30 @@ import Cocoa
 import Combine
 import JavaScriptCore
 import AdbAutomator
+import EmulatorAutomatorCommon
 
 @objc protocol EmulatorJSExports: JSExport {
+    
     static func create() -> Self
+    
     func snapshot()
     func tap(_ x: Double, _ y: Double)
-    
-    func download(handler: JSValue)
+    func tap(_ x: Double, _ y: Double, width: Double, height: Double)
+    func text(_ text: String)
+
+    // func download(handler: JSValue)
+    func match(_ name: String) -> Bool
     
     func listPackages() -> [String]
     func openPackage(_ string: String)
+    
 }
 
 
 @objc final class Emulator: NSObject, EmulatorJSExports {
+    
+    // class shared resource
+    static var resources: AutomatorScriptResource?
     
     var disposeBag = Set<AnyCancellable>()
     
@@ -37,17 +47,21 @@ import AdbAutomator
         return Emulator()
     }
     
-    func download(handler: JSValue) {
-        var count = 0
-        taskQueue.async {
-            for _ in 0..<10 {
-                handler.call(withArguments: [
-                    ["isFinish": false, "isCancelled": count > 5, "date": Date()]
-                ])
-                count += 1
-            }
-        }
-    }
+    // func download(handler: JSValue) {
+    //     var count = 0
+    //     taskQueue.async {
+    //         for _ in 0..<10 {
+    //             handler.call(withArguments: [
+    //                 ["isFinish": false, "isCancelled": count > 5, "date": Date()]
+    //             ])
+    //             count += 1
+    //         }
+    //     }
+    // }
+    
+}
+
+extension Emulator {
     
     func listPackages() -> [String] {
         let result = Adb.adb(arguments: ["shell", "pm", "list", "packages"], environment: nil)
@@ -76,6 +90,39 @@ import AdbAutomator
 
 extension Emulator {
     
+    func match(_ name: String) -> Bool {
+        guard let resources = Emulator.resources else {
+            return false
+        }
+        
+        guard let asset = resources.find(asset: name + ".ea"), case let Node.Content.image(target) = asset.content else {
+            NotificationCenter.default.post(name: Emulator.didReceiveLog, object: "Emulator.match cannot find asset: \(name)")
+            return false
+        }
+        
+        let result = Adb.screencapDirect()
+        switch result {
+        case .success(let image):
+            self.screencap.send(image)
+            let service = OpenCVService()
+            let matchResult = service.match(image: image, target: target)
+            guard (matchResult.determinant > 0.3 && matchResult.determinant < 1.1) || matchResult.score > 0.6 else {
+                return false
+            }
+            
+            return true
+            
+        case .failure(let error):
+            os_log("%{public}s[%{public}ld], %{public}s: %{public}s", ((#file as NSString).lastPathComponent), #line, #function, error.localizedDescription)
+            NotificationCenter.default.post(name: Emulator.didReceiveLog, object: "Emulator.match asset: \(name) get error: \(error.localizedDescription)")
+            return false
+        }
+    }
+    
+}
+
+extension Emulator {
+    
     func snapshot() {
         os_log("%{public}s[%{public}ld], %{public}s: snapshot…", ((#file as NSString).lastPathComponent), #line, #function)
         
@@ -94,6 +141,19 @@ extension Emulator {
         os_log("%{public}s[%{public}ld], %{public}s: tap %{public}s", ((#file as NSString).lastPathComponent), #line, #function, point.debugDescription)
     }
     
+    func tap(_ x: Double, _ y: Double, width: Double, height: Double) {
+        let point = CGPoint(x: Double.random(in: x..<(x+width)),
+                            y: Double.random(in: y..<(y+height)))
+        _ = Adb.Shell.Input.tap(point: point)
+        os_log("%{public}s[%{public}ld], %{public}s: tap %{public}s", ((#file as NSString).lastPathComponent), #line, #function, point.debugDescription)
+    }
+    
+    func text(_ text: String) {
+        _ = Adb.Shell.Input.text(text: text)
+        os_log(.info, log: .debug, "%{public}s[%{public}ld], %{public}s: text %s", ((#file as NSString).lastPathComponent), #line, #function, text)
+    }
+
+    
 }
 
 extension Emulator {
@@ -103,4 +163,8 @@ extension Emulator {
         context.evaluateScript("var emulator = Emulator.create();")
     }
     
+}
+
+extension Emulator {
+    static var didReceiveLog = Notification.Name("Emulator.didReceiveLog")
 }

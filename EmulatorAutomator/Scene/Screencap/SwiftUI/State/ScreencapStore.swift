@@ -14,6 +14,8 @@ final class ScreencapStore: ObservableObject {
 
     @Published var screencapState = ScreencapState()
     
+    let workingQueue = DispatchQueue(label: "com.mainasuk.EmulatorAutomator.ScreencapStore.dispatcher", qos: .userInitiated, target: DispatchQueue.main)
+    
     private var disposeBag = Set<AnyCancellable>()
     
     init() {
@@ -23,11 +25,14 @@ final class ScreencapStore: ObservableObject {
     func dispatch(_ action: ScreencapAction) {
         os_log(.info, log: .interaction, "%{public}s[%{public}ld], %{public}s: [Action] %{publis}s", ((#file as NSString).lastPathComponent), #line, #function, String(describing: action))
         
-        let result = ScreencapStore.reduce(state: screencapState, action: action)
-        screencapState = result.0
-        if let command = result.1 {
-            os_log(.info, log: .interaction, "%{public}s[%{public}ld], %{public}s: [Command] %{publis}s", ((#file as NSString).lastPathComponent), #line, #function, String(describing: command))
-            command.execute(in: self)
+        // make dispatcher queue serial
+        workingQueue.async {
+            let result = ScreencapStore.reduce(state: self.screencapState, action: action)
+            self.screencapState = result.0
+            if let command = result.1 {
+                os_log(.info, log: .interaction, "%{public}s[%{public}ld], %{public}s: [Command] %{publis}s", ((#file as NSString).lastPathComponent), #line, #function, String(describing: command))
+                command.execute(in: self)
+            }
         }
     }
     
@@ -45,9 +50,25 @@ final class ScreencapStore: ObservableObject {
             case .failure(let error):
                 screencapState.content.error = error
             }
+        case .makeSelectionOfScreencap(let rect):
+            screencapState.content.selectionFrame = rect
+        case .resetSelectionOfScreencap:
+            screencapState.content.selectionFrame = .zero
+        case .setScreenshotCroppedImage(let image):
+            screencapState.utility.flannMatchingImage = image
+        case .setPreviewResult(let result):
+            screencapState.utility.featureMatchingResult = result
         }
 
         return (screencapState, screencapCommand)
     }
+    
+}
 
+extension ScreencapStore: Equatable {
+    
+    static func == (lhs: ScreencapStore, rhs: ScreencapStore) -> Bool {
+        return lhs === rhs
+    }
+    
 }

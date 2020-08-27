@@ -1,8 +1,8 @@
 //
-//  ProjectOutlineViewController.swift
+//  OutlineViewController.swift
 //  EmulatorAutomator
 //
-//  Created by MainasuK Cirno on 2020/3/14.
+//  Created by Cirno MainasuK on 2020-7-15.
 //  Copyright © 2020 MainasuK Cirno. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import Cocoa
 import Combine
 import CommonOSLog
 
-final class ProjectOutlineViewController: NSViewController {
+class OutlineViewController: NSViewController {
     
     var contentDisposeBag = Set<AnyCancellable>()
     var disposeBag = Set<AnyCancellable>()
@@ -26,8 +26,8 @@ final class ProjectOutlineViewController: NSViewController {
                     .receive(on: DispatchQueue.main)
                     .sink { [weak self] _ in
                         self?.viewModel.content.send(document.content)
-                    }
-                    .store(in: &contentDisposeBag)
+                }
+                .store(in: &contentDisposeBag)
             }
         }
     }
@@ -48,12 +48,12 @@ final class ProjectOutlineViewController: NSViewController {
     }()
     
     enum OutlineColumn: String {
-        case name = "com.mainasuk.EmulatorAutomator.ProjectOutlineViewController.nameColumn"
+        case name = "com.mainasuk.EmulatorAutomator.OutlineViewController.nameColumn"
     }
     
     private(set) lazy var outlineView: NSOutlineView = {
         let outlineView = NSOutlineView()
-    
+        
         let taskColumn = NSTableColumn(identifier: NSUserInterfaceItemIdentifier(OutlineColumn.name.rawValue))
         outlineView.addTableColumn(taskColumn)
         
@@ -65,15 +65,18 @@ final class ProjectOutlineViewController: NSViewController {
     }()
     
     private(set) lazy var addButton: NSButton = {
-        let button = NSButton(image: NSImage(named: NSImage.addTemplateName)!, target: self, action: #selector(ProjectOutlineViewController.addButtonPressed(_:)))
+        let button = NSButton(image: NSImage(named: NSImage.addTemplateName)!, target: self, action: #selector(OutlineViewController.addButtonPressed(_:)))
         button.isBordered = false
         button.setButtonType(.momentaryPushIn)
         return button
     }()
     
-    struct NotificationName {
-        static let selectionChanged = Notification.Name("selectionChanged")
-    }
+    private(set) lazy var deleteButton: NSButton = {
+        let button = NSButton(image: NSImage(named: NSImage.removeTemplateName)!, target: self, action: #selector(OutlineViewController.deleteButtonPressed(_:)))
+        button.isBordered = false
+        button.setButtonType(.momentaryPushIn)
+        return button
+    }()
     
     override func loadView() {
         view = NSView()
@@ -81,7 +84,7 @@ final class ProjectOutlineViewController: NSViewController {
     
 }
 
-extension ProjectOutlineViewController {
+extension OutlineViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -91,7 +94,7 @@ extension ProjectOutlineViewController {
         bottomToolbarStackView.spacing = 0
         
         bottomToolbarStackView.addArrangedSubview(addButton)
-        //bottomToolbarStackView.addArrangedSubview(removeButton)
+        bottomToolbarStackView.addArrangedSubview(deleteButton)
         
         bottomToolbarStackView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(bottomToolbarStackView)
@@ -101,8 +104,8 @@ extension ProjectOutlineViewController {
             bottomToolbarStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             addButton.widthAnchor.constraint(equalToConstant: 22),
             addButton.heightAnchor.constraint(equalTo: addButton.widthAnchor, multiplier: 1.0),
-            //removeButton.widthAnchor.constraint(equalToConstant: 22),
-            //removeButton.heightAnchor.constraint(equalTo: removeButton.widthAnchor, multiplier: 1.0),
+            deleteButton.widthAnchor.constraint(equalToConstant: 22),
+            deleteButton.heightAnchor.constraint(equalTo: deleteButton.widthAnchor, multiplier: 1.0),
         ])
         
         // Layout outlineView
@@ -119,7 +122,7 @@ extension ProjectOutlineViewController {
         ])
         
         scrollView.documentView = outlineView
-                
+        
         // Setup treeController
         treeController.bind(
             NSBindingName("contentArray"),
@@ -142,44 +145,45 @@ extension ProjectOutlineViewController {
         if self.treeController.arrangedObjects.children?.isEmpty == false {
             self.outlineView.expandItem(self.treeController.arrangedObjects.children![0], expandChildren: true)
         }
+        
+        // Setup view model
+        viewModel.currentSelectionContentNode
+            .sink { [weak self] node in
+                self?.deleteButton.isEnabled = node != nil
+        }
+        .store(in: &disposeBag)
     }
     
 }
 
-extension ProjectOutlineViewController {
+extension OutlineViewController {
     
-    @objc private func addButtonPressed(_ sender: NSButton) {
-        os_log(.info, log: .interaction, "%{public}s[%{public}ld], %{public}s", ((#file as NSString).lastPathComponent), #line, #function)
-        guard let document = document else {
-            assertionFailure()
-            return
-        }
-        var filename = "Untitled"
-        var suffix = 1
-        let fileExtension = ".js"
-        while document.content.sources.contains(where: { $0.name == (filename + fileExtension) }) {
-            filename = "Untitled" + "\(suffix)"
-            suffix += 1
-        }
+    @objc func addButtonPressed(_ sender: NSButton) {
+        // not implement
+    }
     
-        let node = Document.Content.Node(name: filename + fileExtension, content: "")
-        document.createSourceNode(node: node)
+    @objc func deleteButtonPressed(_ sender: NSButton) {
+        // not implement
+    }
+    
+    @objc func outlineViewSelectionChange(_ notification: Notification) {
+        // not implement
     }
     
 }
 
 // MARK: - NSOutlineViewDelegate
-extension ProjectOutlineViewController: NSOutlineViewDelegate {
+extension OutlineViewController: NSOutlineViewDelegate {
     
     func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
         guard let identifier = tableColumn?.identifier,
-        let column = OutlineColumn(rawValue: identifier.rawValue) else {
-            return nil
+            let column = OutlineColumn(rawValue: identifier.rawValue) else {
+                return nil
         }
         
         guard let treeNode = item as? NSTreeNode,
-        let node = treeNode.representedObject as? OutlineViewModel.Node else {
-            return nil
+            let node = treeNode.representedObject as? OutlineViewModel.Node else {
+                return nil
         }
         
         var view: NSTableCellView
@@ -195,7 +199,7 @@ extension ProjectOutlineViewController: NSOutlineViewDelegate {
     }
     
     func outlineViewSelectionDidChange(_ notification: Notification) {
-        NotificationCenter.default.post(name: ProjectOutlineViewController.NotificationName.selectionChanged, object: self)
+        // not implement
     }
     
 }

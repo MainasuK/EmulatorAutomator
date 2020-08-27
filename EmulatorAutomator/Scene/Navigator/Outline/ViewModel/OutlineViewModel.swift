@@ -12,36 +12,39 @@ import Combine
 final class OutlineViewModel: NSObject {
     
     var disposeBag = Set<AnyCancellable>()
-    
     let objectWillChange = PassthroughSubject<Void, Never>()
-    let content = PassthroughSubject<Document.Content, Never>()
     
-    
-    
+    // input
+    let content = CurrentValueSubject<Document.Content?, Never>(nil)
     var sourcesEntry = Node(object: .entry(.sources), children: [])
     var assetsEntry = Node(object: .entry(.assets), children: [])
+    let currentSelectionTreeNode = CurrentValueSubject<NSTreeNode?, Never>(nil)
+
+    // output
+    let currentSelectionContentNode = CurrentValueSubject<Document.Content.Node?, Never>(nil)
     
-    @objc private(set) lazy var tree: [Node] = {
-        let projectEntry = Node(object: .entry(.project), children: [sourcesEntry, assetsEntry])
+    @objc lazy var tree: [Node] = {
+        let projectEntry = Node(object: .entry(.project), children: [])
         return [projectEntry]
     }()
     
     override init() {
         super.init()
-        
-        content
-            .sink(receiveValue: { [weak self] content in
-                guard let `self` = self else { return }
-                self.willChangeValue(for: \.tree)
+    
+        currentSelectionTreeNode
+            .map { treeNode -> Document.Content.Node? in
+                guard let node = treeNode?.representedObject as? OutlineViewModel.Node else {
+                    return nil
+                }
                 
-                let sources = OutlineViewModel.travel(contentNodes: content.sources)
-                self.sourcesEntry.children = sources
-                
-                let assets = OutlineViewModel.travel(contentNodes: content.assets)
-                self.assetsEntry.children = assets
-                
-                self.didChangeValue(for: \.tree)
-            })
+                switch node.object {
+                case .contentNode(let contentNode):
+                    return contentNode
+                default:
+                    return nil
+                }
+            }
+            .assign(to: \.value, on: currentSelectionContentNode)
             .store(in: &disposeBag)
     }
     
@@ -52,10 +55,12 @@ extension OutlineViewModel {
     static func travel(contentNodes: [Document.Content.Node]) -> [Node] {
         var nodes: [Node] = []
         for contentNode in contentNodes {
-            if !contentNode.isFile {
+            switch contentNode.content {
+            case .directory:
                 nodes.append(contentsOf: OutlineViewModel.travel(contentNodes: contentNode.children))
-            } else {
+            default:
                 nodes.append(Node(object: .contentNode(contentNode)))
+
             }
         }
         return nodes
@@ -83,9 +88,14 @@ extension OutlineViewModel {
         }
         @objc var isLeaf: Bool {
             switch object {
-            case .contentNode(let contentNode) where !contentNode.isFile:
-                // make directory collapsable
-                return false
+            case .contentNode(let contentNode):
+                switch contentNode.content {
+                case .directory:
+                    return false
+                default:
+                    return true
+                }
+
             default:
                 return children.isEmpty
             }

@@ -6,6 +6,7 @@ Setup build environment.
 
 ```bash
 $ brew cask install android-platform-tools
+$ brew install wget
 $ brew install opencv
 $ brew install tesseract
 ```

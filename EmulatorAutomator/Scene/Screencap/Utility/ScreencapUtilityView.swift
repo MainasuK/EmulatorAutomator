@@ -56,6 +56,8 @@ struct ScreencapUtilityView: View {
             selectionView
             Divider()
             scriptGenerationView
+            Divider()
+            assetGenerationView
         }
         .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -117,7 +119,47 @@ extension ScreencapUtilityView {
                 }, label: {
                     Text("Copy")
                 })
-                Spacer()
+            }
+            .padding(.leading, 20)
+        }
+    }
+    
+    var assetGenerationView: some View {
+        VStack {
+            Text("Asset")
+                .modifier(TextTitleStyleModifier())
+            VStack {
+                Image(nsImage: self.store.screencapState.utility.flannMatchingImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .background(Text("Make selection region\non the left image").multilineTextAlignment(.center))
+                    .frame(maxWidth: .infinity, maxHeight: 200)
+                    .background(Color.gray)
+                HStack {
+                    Text(String(format: "Good: %d", store.screencapState.utility.featureMatchingResult.goodMatchCount))
+                    Text(String(format: "Determinant: %.2lf", store.screencapState.utility.featureMatchingResult.determinant))
+                    Text(String(format: "Score: %.2lf%", store.screencapState.utility.featureMatchingResult.score * 100))
+                }
+                HStack {
+                    Toggle(isOn: $store.screencapState.utility.isPreviewPinned) {
+                        Text("Pin")
+                    }
+                    Button(action: {
+                        guard let image = self.store.screencapState.utility.featureMatchingResult.previewImage else { return }
+                        let hostingView = NSHostingView(rootView: self.createPreviewView(preview: image))
+                        (NSApp.delegate as? AppDelegate)?.showWindow(with: hostingView)
+                    }, label: {
+                        Text("Preview")
+                    })
+                    .disabled(self.store.screencapState.utility.featureMatchingResult.previewImage == nil)
+                    Button(action: {
+                        self.store.screencapState.utility.saveAssetActionPublisher
+                            .send(self.store.screencapState.utility.flannMatchingImage)
+                    }, label: {
+                        Text("Save as Asset")
+                    })
+                    .disabled(!self.store.screencapState.utility.flannMatchingImage.isValid)
+                }
             }
             .padding(.leading, 20)
         }
@@ -129,6 +171,9 @@ extension ScreencapUtilityView {
     
     private func generateCode(for type: ScreencapState.Utility.ScriptGenerationType) -> String {
         switch type {
+        case .tapInSelection:
+            let rect = store.screencapState.content.selectionFrame.standardized
+            return "emulator.tap(\(floor(rect.origin.x)), \(floor(rect.origin.x)), \(floor(rect.width)), \(floor(rect.height)));"
         case .tapInTheCenterOfSelection:
             let rect = store.screencapState.content.selectionFrame.standardized
             let center = CGPoint(x: floor(rect.midX), y: floor(rect.midY))
@@ -139,6 +184,13 @@ extension ScreencapUtilityView {
             return "emulator.openPackage('com.android.browser');"
         }
     }
+    
+    private func createPreviewView(preview image: NSImage) -> some View {
+        Image(nsImage: image)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+    }
+    
 }
 
 struct ScreencapUtilityView_Previews: PreviewProvider {
@@ -218,3 +270,38 @@ struct ScreencapUtilityView_Previews: PreviewProvider {
 //    }
 //
 //}
+
+struct GridRow<Content>: View where Content: View {
+        
+    let title: String
+    let alignment: VerticalAlignment
+    var content: Content
+    
+    init(title: String, alignment: VerticalAlignment = .firstTextBaseline, @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.alignment = alignment
+        self.content = content()
+    }
+    
+    var body: some View {
+        HStack(alignment: alignment) {
+            Text(title)
+                .font(.gridSubtitle)
+                .frame(width: 80, alignment: .trailing)
+            content
+        }
+    }
+    
+}
+
+
+extension Font {
+    static var gridSubtitle: Font {
+        return Font.system(size: 12, weight: .light)
+    }
+    
+    static var gridRegular: Font {
+        return Font.system(size: 12, weight: .regular)
+    }
+}
+
